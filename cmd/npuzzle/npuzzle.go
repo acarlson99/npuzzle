@@ -30,4 +30,6 @@ func main() {
 	d := newState.MoveRight()
 	fmt.Println(c)
 	fmt.Println(d)
+	fmt.Println(d.ToStr())
+	fmt.Printf("%+v\n", d)
 }
