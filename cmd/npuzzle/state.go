@@ -1,6 +1,6 @@
 package main
 
-type Gamestate struct {
+type State struct {
 	Score  int
 	Board  []int
 	EmptyX int
@@ -8,11 +8,11 @@ type Gamestate struct {
 	Size   int
 }
 
-func (g *Gamestate) calcScore() int {
+func (g *State) calcScore() int {
 	return (0)
 }
 
-func (g *Gamestate) Init(board []int, emptyX, emptyY, size int) {
+func (g *State) Init(board []int, emptyX, emptyY, size int) {
 	g.Score = g.calcScore()
 	g.Board = make([]int, len(board))
 	copy(g.Board, board)
@@ -22,13 +22,13 @@ func (g *Gamestate) Init(board []int, emptyX, emptyY, size int) {
 	g.Size = size
 }
 
-func (g *Gamestate) Copy() *Gamestate {
-	newState := new(Gamestate)
+func (g *State) Copy() *State {
+	newState := new(State)
 	newState.Init(g.Board, g.EmptyX, g.EmptyY, g.Size)
 	return (newState)
 }
 
-func (g *Gamestate) shiftTile(x, y int) *Gamestate {
+func (g *State) shiftTile(x, y int) *State {
 	if g.EmptyX+x < 0 || g.EmptyX+x > g.Size || g.EmptyY+y < 0 || g.EmptyY+y > g.Size {
 		return (nil)
 	}
@@ -46,18 +46,18 @@ func (g *Gamestate) shiftTile(x, y int) *Gamestate {
 	return (newState)
 }
 
-func (g *Gamestate) MoveUp() *Gamestate {
+func (g *State) MoveUp() *State {
 	return (g.shiftTile(0, -1))
 }
 
-func (g *Gamestate) MoveDown() *Gamestate {
+func (g *State) MoveDown() *State {
 	return (g.shiftTile(0, 1))
 }
 
-func (g *Gamestate) MoveLeft() *Gamestate {
+func (g *State) MoveLeft() *State {
 	return (g.shiftTile(-1, 0))
 }
 
-func (g *Gamestate) MoveRight() *Gamestate {
+func (g *State) MoveRight() *State {
 	return (g.shiftTile(1, 0))
 }

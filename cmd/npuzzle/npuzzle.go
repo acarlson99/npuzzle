@@ -18,7 +18,7 @@ func main() {
 	args := flag.Args()
 
 	fmt.Println(args)
-	g := new(Gamestate)
+	g := new(State)
 	g.Init([]int{1, 2, 3, 4, 0, 5, 6, 7, 8, 9, 10, 11}, 0, 1, 4)
 
 	newState := g.MoveUp()
