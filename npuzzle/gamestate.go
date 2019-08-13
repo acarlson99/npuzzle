@@ -48,21 +48,6 @@ func (g *Gamestate) shiftTile(x, y int) *Gamestate {
 
 func (g *Gamestate) MoveUp() *Gamestate {
 	return (g.shiftTile(0, -1))
-	// if g.EmptyY == 0 {
-	// 	return (nil)
-	// }
-
-	// newState := g.Copy()
-	// newState.EmptyY -= 1
-
-	// newEmpty := (newState.EmptyY * newState.Size) + newState.EmptyX
-	// gEmpty := (g.EmptyY * g.Size) + g.EmptyX
-
-	// emptyVal := g.Board[gEmpty]
-	// newState.Board[gEmpty] = g.Board[newEmpty]
-	// newState.Board[newEmpty] = emptyVal
-
-	// return (newState)
 }
 
 func (g *Gamestate) MoveDown() *Gamestate {
