@@ -47,16 +47,32 @@ func main() {
 	fmt.Println(d)
 	fmt.Println(d.ToStr())
 	fmt.Printf("%+v\n", d)
+
+	cont := Container{Num_opened: 0, Num_closed: 0, Max_num_states: 0, Num_moves: 0, Start: g, Goal: g, End: nil}
+	solvePuzzle(&cont)
 }
 
 func solvePuzzle(cont *Container) {
 	open_states := prque.New()
-	closed_states := make(map[float32]State)
+	closed_states := make(map[float32]*State)
 
-	open_states.Push(cont.Start, cont.Start.Score)
+	open_states.Push(cont.Start, cont.Start.Hash)
 
 	for !open_states.Empty() {
-		newState, val := open_states.Pop()
+		ii, _ := open_states.Pop()
 
+		state := ii.(*State)
+		if state.Hash == cont.Goal.Hash {
+			// TODO: handle good case
+			fmt.Println("GOOD")
+		}
+		// for each move
+		if closed_states[state.Hash] {
+			// TODO: handle conflict here
+		} else {
+			// TODO: push to opened_states
+		}
+
+		closed_states[state.Hash] = state
 	}
 }

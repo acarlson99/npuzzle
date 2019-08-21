@@ -9,11 +9,12 @@ import (
 type State struct {
 	Score  float32
 	Board  []int
+	Hash   float32
 	EmptyX int
 	EmptyY int
 	Size   int
 	Parent *State
-	G      int // nodes traversed from start to current node
+	G      int     // nodes traversed from start to current node
 	H      float32 // distance from goal.  Might change back to int
 }
 
@@ -34,6 +35,11 @@ func (state *State) CalcScore() float32 {
 	return (calcScore(state))
 }
 
+func (state *State) CalcHash() float32 {
+	// TODO: implement hash
+	return 0
+}
+
 func (state *State) Init(board []int, emptyX, emptyY, size int) {
 	state.Board = make([]int, size*size)
 	copy(state.Board, board)
@@ -41,6 +47,7 @@ func (state *State) Init(board []int, emptyX, emptyY, size int) {
 	state.EmptyY = emptyY
 	state.Size = size
 	state.Parent = nil
+	state.Hash = 0
 	state.G = -1
 	state.H = -1
 }
@@ -52,6 +59,7 @@ func (state *State) MakeChild() *State {
 	newState.Parent = state
 	newState.G = state.G + 1
 	newState.H = state.CalcScore()
+	newState.Hash = newState.CalcHash()
 	return (newState)
 }
 
