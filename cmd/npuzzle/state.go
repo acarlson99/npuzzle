@@ -1,80 +1,99 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"os"
+)
 
 type State struct {
-	Score  int
+	Score  float32
 	Board  []int
 	EmptyX int
 	EmptyY int
 	Size   int
 	Parent *State
-	Dist   int
+	G      int // nodes traversed from start to current node
+	H      float32 // distance from goal.  Might change back to int
 }
 
-func (g *State) calcScore() int {
-	return (0)
+var (
+	calcScore func(*State) float32
+)
+
+func SetScoreCalc(f func(*State) float32) {
+	calcScore = f
 }
 
-func (g *State) Init(board []int, emptyX, emptyY, size int) {
-	g.Score = g.calcScore()
-	g.Board = make([]int, size*size)
-	copy(g.Board, board)
-	g.EmptyX = emptyX
-	g.EmptyY = emptyY
-	g.Size = size
-	g.Parent = nil
-	g.Dist = 0
+func (state *State) CalcScore() float32 {
+	if calcScore == nil {
+		ll := log.New(os.Stderr, "", 0)
+		ll.Println("calcScore has not been set\n")
+		os.Exit(1)
+	}
+	return (calcScore(state))
+}
+
+func (state *State) Init(board []int, emptyX, emptyY, size int) {
+	state.Board = make([]int, size*size)
+	copy(state.Board, board)
+	state.EmptyX = emptyX
+	state.EmptyY = emptyY
+	state.Size = size
+	state.Parent = nil
+	state.G = -1
+	state.H = -1
 }
 
 // TODO: make hashmap to hold children.  Return child if map contains it
-func (g *State) MakeChild() *State {
+func (state *State) MakeChild() *State {
 	newState := new(State)
-	newState.Init(g.Board, g.EmptyX, g.EmptyY, g.Size)
-	newState.Parent = g
-	newState.Dist = g.Dist + 1
+	newState.Init(state.Board, state.EmptyX, state.EmptyY, state.Size)
+	newState.Parent = state
+	newState.G = state.G + 1
+	newState.H = state.CalcScore()
 	return (newState)
 }
 
-func (g *State) shiftTile(x, y int) *State {
-	if g.EmptyX+x < 0 || g.EmptyX+x > g.Size || g.EmptyY+y < 0 || g.EmptyY+y > g.Size {
+func (state *State) shiftTile(x, y int) *State {
+	if state.EmptyX+x < 0 || state.EmptyX+x > state.Size || state.EmptyY+y < 0 || state.EmptyY+y > state.Size {
 		return (nil)
 	}
-	newState := g.MakeChild()
+	newState := state.MakeChild()
 	newState.EmptyX += x
 	newState.EmptyY += y
 
 	newEmpty := (newState.EmptyY * newState.Size) + newState.EmptyX
-	gEmpty := (g.EmptyY * g.Size) + g.EmptyX
+	gEmpty := (state.EmptyY * state.Size) + state.EmptyX
 
-	emptyVal := g.Board[gEmpty]
-	newState.Board[gEmpty] = g.Board[newEmpty]
+	emptyVal := state.Board[gEmpty]
+	newState.Board[gEmpty] = state.Board[newEmpty]
 	newState.Board[newEmpty] = emptyVal
 
 	return (newState)
 }
 
-func (g *State) MoveUp() *State {
-	return (g.shiftTile(0, -1))
+func (state *State) MoveUp() *State {
+	return (state.shiftTile(0, -1))
 }
 
-func (g *State) MoveDown() *State {
-	return (g.shiftTile(0, 1))
+func (state *State) MoveDown() *State {
+	return (state.shiftTile(0, 1))
 }
 
-func (g *State) MoveLeft() *State {
-	return (g.shiftTile(-1, 0))
+func (state *State) MoveLeft() *State {
+	return (state.shiftTile(-1, 0))
 }
 
-func (g *State) MoveRight() *State {
-	return (g.shiftTile(1, 0))
+func (state *State) MoveRight() *State {
+	return (state.shiftTile(1, 0))
 }
 
-func (g *State) ToStr() string {
-	str := fmt.Sprintf("&{Score:%d Board:%v EmptyX:%d EmptyY:%d Size:%d", g.Score, g.Board, g.EmptyX, g.EmptyY, g.Size)
-	if g.Parent != nil {
-		return (fmt.Sprintf("%s Parent:%s}", str, g.Parent.ToStr()))
+func (state *State) ToStr() string {
+	str := fmt.Sprintf("&{Score:%d Board:%v EmptyX:%d EmptyY:%d Size:%d", state.Score, state.Board, state.EmptyX, state.EmptyY, state.Size)
+	if state.Parent != nil {
+		return (fmt.Sprintf("%s Parent:%s}", str, state.Parent.ToStr()))
 	} else {
-		return (fmt.Sprintf("%s Parent:%v}", str, g.Parent))
+		return (fmt.Sprintf("%s Parent:%v}", str, state.Parent))
 	}
 }
