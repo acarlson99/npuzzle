@@ -4,8 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-
-	"gopkg.in/karalabe/cookiejar.v2/collections/prque"
 )
 
 type Container struct { // TODO: rename.  Stores info about search
@@ -29,50 +27,14 @@ func main() {
 	flag.Parse()
 	args := flag.Args()
 
+	SetHCalc(ManhattanDist)
+
 	fmt.Println(args)
 	g := new(State)
-	g.Init([]int{1, 2, 3, 4, 0, 5, 6, 7, 8, 9, 10, 11}, 0, 1, 4)
-
-	SetScoreCalc(ManhattanDist)
+	g.Init([]int{1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11}, 1, 1, 2)
 
 	state := g.MoveUp()
-	// open_states.Push(state, state.Score)
-	fmt.Println(g)
-	fmt.Println(state)
-	sndState := state.MoveUp()
-	fmt.Println(sndState)
-	c := state.MoveLeft()
-	d := state.MoveRight()
-	fmt.Println(c)
-	fmt.Println(d)
-	fmt.Println(d.ToStr())
-	fmt.Printf("%+v\n", d)
-
-	cont := Container{Num_opened: 0, Num_closed: 0, Max_num_states: 0, Num_moves: 0, Start: g, Goal: g, End: nil}
-	solvePuzzle(&cont)
-}
-
-func solvePuzzle(cont *Container) {
-	open_states := prque.New()
-	closed_states := make(map[float32]*State)
-
-	open_states.Push(cont.Start, cont.Start.Hash)
-
-	for !open_states.Empty() {
-		ii, _ := open_states.Pop()
-
-		state := ii.(*State)
-		if state.Hash == cont.Goal.Hash {
-			// TODO: handle good case
-			fmt.Println("GOOD")
-		}
-		// for each move
-		if closed_states[state.Hash] {
-			// TODO: handle conflict here
-		} else {
-			// TODO: push to opened_states
-		}
-
-		closed_states[state.Hash] = state
-	}
+	fmt.Println("BASE")
+	g.PrintBoard()
+	fmt.Println(solvePuzzle(g, state).ToStr())
 }
