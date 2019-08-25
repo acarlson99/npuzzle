@@ -167,6 +167,5 @@ func (state *State) PrintParentsWidth(width uint) uint {
 
 func (state *State) PrintParents() uint {
 	width := BoardNumWidth(state.Board)
-	state.PrintParentsWidth(width)
-	return uint(2) + uint(state.Size-1) + (width * uint(state.Size))
+	return state.PrintParentsWidth(width)
 }
