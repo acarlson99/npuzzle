@@ -6,35 +6,55 @@ import (
 	"os"
 )
 
-type Container struct { // TODO: rename.  Stores info about search
-	Num_opened     int    // total num of opened states
-	Num_closed     int    // size of closed states
-	Max_num_states int    // max number of states ever stored in memory
-	Num_moves      int    // initial to final
-	Start          *State // beginning state
-	Goal           *State // goal state
-	End            *State // ptr to final state. nil if unsolvable
-}
-
-func usage() {
-	fmt.Fprintf(os.Stderr, "usage: ./npuzzle [inputfile]\n")
+func usage(ret int) {
 	flag.PrintDefaults()
-	os.Exit(1)
+	os.Exit(ret)
 }
 
 func main() {
-	flag.Usage = usage
-	flag.Parse()
-	args := flag.Args()
+	// handle args
+	flag.Usage = func() { usage(1) }
 
+	var endFile, startFile string
+	flag.StringVar(&endFile, "end", "", "file containing goal state")
+	flag.StringVar(&startFile, "start", "", "file containing start state")
+
+	help := flag.Bool("h", false, "display help message")
+
+	flag.Parse()
+
+	if *help == true {
+		usage(0)
+	}
+
+	args := flag.Args()
+	fmt.Println(args)
+
+	// setup
 	SetHCalc(ManhattanDist)
 
-	fmt.Println(args)
-	g := new(State)
-	g.Init([]int{1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11}, 1, 1, 2)
+	// read states
+	start, end, err := InitStates(startFile, endFile)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("NOTE: good file looks like this")
+		fmt.Println(`# I am a comment
+3 # size of puzzle
+1 2 3 # contents of puzzle
+4 5 6
+7 8 0`)
+		os.Exit(1)
+	}
+	fmt.Println(start.ToStr())
+	fmt.Println(end.ToStr())
 
-	state := g.MoveUp()
-	fmt.Println("BASE")
-	g.PrintBoard()
-	fmt.Println(solvePuzzle(g, state).ToStr())
+	// solve
+	info := SolvePuzzle(start, end)
+	fmt.Println("RETURN: ", info.End.ToStr())
+
+	if info.End != nil {
+		info.End.PrintParents()
+	} else {
+		fmt.Println("Unsolvable")
+	}
 }
