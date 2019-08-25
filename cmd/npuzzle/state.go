@@ -3,17 +3,17 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"hash/fnv"
 	"log"
 	"os"
 	"strconv"
-	"hash/fnv"
 )
 
 type State struct {
 	F      int // f score
 	G      int // nodes traversed from start to current node
 	H      int // distance from goal
-	Board  []int
+	Board  []uint
 	Hash   uint64
 	EmptyX int
 	EmptyY int
@@ -41,7 +41,8 @@ func (state *State) CalcH() int {
 func (state *State) CalcHash() uint64 {
 	var buffer bytes.Buffer
 	for _, num := range state.Board {
-		buffer.WriteString(strconv.Itoa(num))
+		buffer.WriteString(string(strconv.AppendUint([]byte(nil), uint64(num), 10)))
+		// buffer.WriteString(strconv.Itoa(num))
 		buffer.WriteString(",")
 	}
 	f := fnv.New64a()
@@ -49,23 +50,8 @@ func (state *State) CalcHash() uint64 {
 	return f.Sum64()
 }
 
-func (state *State) PrintBoard() {
-	for ii := 0; ii < state.Size; ii += 1 {
-		fmt.Println(state.Board[ii*state.Size : ii*state.Size+state.Size])
-	}
-}
-
-func (state *State) PrintParents() {
-	if state.Parent != nil {
-		state.Parent.PrintParents()
-		offset := state.Parent.Size + 1
-		fmt.Printf("%*c\n%*c\n", offset, '|', offset, 'V')
-	}
-	state.PrintBoard()
-}
-
-func (state *State) Init(board []int, emptyX, emptyY, size int) {
-	state.Board = make([]int, size*size)
+func (state *State) Init(board []uint, emptyX, emptyY, size int) {
+	state.Board = make([]uint, size*size)
 	copy(state.Board, board)
 	state.EmptyX = emptyX
 	state.EmptyY = emptyY
@@ -85,7 +71,7 @@ func (state *State) copyState() *State {
 	newState.F = state.F
 	newState.G = state.G
 	newState.H = state.H
-	newState.Board = make([]int, state.Size*state.Size)
+	newState.Board = make([]uint, state.Size*state.Size)
 	copy(newState.Board, state.Board)
 	newState.Hash = state.Hash
 	newState.EmptyX = state.EmptyX
@@ -102,7 +88,8 @@ func (state *State) copyState() *State {
 }
 
 func (state *State) shiftTile(x, y int) *State {
-	if state == nil || state.EmptyX+x < 0 || state.EmptyX+x >= state.Size || state.EmptyY+y < 0 || state.EmptyY+y >= state.Size {
+	if state == nil || state.EmptyX+x < 0 || state.EmptyX+x >= state.Size ||
+		state.EmptyY+y < 0 || state.EmptyY+y >= state.Size {
 		return (nil)
 	}
 	newState := state.copyState()
@@ -146,10 +133,40 @@ func (state *State) ToStr() string {
 		return fmt.Sprintf("%+v", state)
 	}
 	return fmt.Sprintf("(%+v %s", state, state.Parent.ToStr())
-	// str := fmt.Sprintf("&{Score:%d Board:%v EmptyX:%d EmptyY:%d Size:%d", state.Score, state.Board, state.EmptyX, state.EmptyY, state.Size)
-	// if state.Parent != nil {
-	// 	return (fmt.Sprintf("%s Parent:%s}", str, state.Parent.ToStr()))
-	// } else {
-	// 	return (fmt.Sprintf("%s Parent:%v}", str, state.Parent))
-	// }
+}
+
+// PRINTING
+func (state *State) PrintBoardWidth(width uint) uint {
+	for ii := 0; ii < state.Size; ii += 1 {
+		fmt.Printf("[")
+		for jj := 0; jj < state.Size; jj += 1 {
+			if jj != 0 {
+				fmt.Printf(" ")
+			}
+			fmt.Printf("%-*d", width, state.Board[(ii*state.Size)+jj])
+		}
+		fmt.Println("]")
+	}
+	return uint(2) + uint(state.Size-1) + (width * uint(state.Size))
+}
+
+// format to size (ceiling (log (max 1 num) 10)))
+// returns width of board printed
+func (state *State) PrintBoard() uint {
+	width := BoardNumWidth(state.Board)
+	return state.PrintBoardWidth(width)
+}
+
+func (state *State) PrintParentsWidth(width uint) uint {
+	if state.Parent != nil {
+		offset := state.Parent.PrintParentsWidth(width)/2 + 1
+		fmt.Printf("%*c\n%*c\n", offset, '|', offset, 'V')
+	}
+	return state.PrintBoardWidth(width)
+}
+
+func (state *State) PrintParents() uint {
+	width := BoardNumWidth(state.Board)
+	state.PrintParentsWidth(width)
+	return uint(2) + uint(state.Size-1) + (width * uint(state.Size))
 }

@@ -47,6 +47,7 @@ func main() {
 	}
 	fmt.Println(start.ToStr())
 	fmt.Println(end.ToStr())
+	// os.Exit(0)
 
 	// solve
 	info := SolvePuzzle(start, end)

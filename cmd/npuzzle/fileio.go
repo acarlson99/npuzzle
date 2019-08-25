@@ -56,12 +56,15 @@ func InitStates(startFile, endFile string) (*State, *State, error) {
 			return nil, nil, err
 		}
 	} else {
-		board := make([]int, len(start.Board))
+		board := make([]uint, len(start.Board))
 		copy(board, start.Board)
-		sort.Ints(board)
+		fmt.Println("SORTING\n", board)
+		sort.SliceStable(board, func(ii, jj int) bool { return board[ii] < board[jj] })
+		fmt.Println("SORTING DONE\n", board)
+		num := board[0]
 		copy(board, board[1:])
-		board[((start.Size-1)*start.Size)+start.Size-1] = 0
-		end.Init(board, start.Size-1, start.Size-1, start.Size)
+		board[((start.Size-1)*start.Size)+start.Size-1] = num
+		end.Init(board, int(start.Size-1), int(start.Size-1), start.Size)
 	}
 	return start, end, nil
 }
@@ -114,7 +117,7 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 	}
 
 	fmt.Println("Reading board")
-	board := make([]int, size*size)
+	board := make([]uint, size*size)
 	emptyX := -1
 	emptyY := -1
 	posY := 0
@@ -128,7 +131,7 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 			} else if word[0] == '#' {
 				break
 			} else {
-				num, err := strconv.ParseInt(word, 10, 32)
+				num, err := strconv.ParseUint(word, 10, 32)
 				if err != nil {
 					return nil, err
 				} else if posX >= size || posY >= size {
@@ -136,7 +139,7 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 						fmt.Errorf("Too many arguments for size %d: \"%s\"",
 							size, word)
 				}
-				board[(posY*size)+posX] = int(num)
+				board[(posY*size)+posX] = uint(num)
 				// if empty tile
 				if num == 0 {
 					emptyX = posX
@@ -157,6 +160,8 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 	if emptyX < 0 || emptyY < 0 {
 		return nil,
 			fmt.Errorf("No empty tile found.  An empty tile is marked with a '0'")
+	} else if posY != size {
+		return nil, fmt.Errorf("Not enough lines for argument %d.  Expected %d", size, posY)
 	}
 
 	// NOTE: this will probably never be called
