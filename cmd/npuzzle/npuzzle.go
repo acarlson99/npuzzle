@@ -18,6 +18,7 @@ func main() {
 	var endFile, startFile string
 	flag.StringVar(&endFile, "end", "", "file containing goal state")
 	flag.StringVar(&startFile, "start", "", "file containing start state")
+	heuristic := flag.String("heuristic", "manhattan", "heuristic function (manhattan, conflict, right-place)")
 
 	help := flag.Bool("h", false, "display help message")
 
@@ -29,6 +30,20 @@ func main() {
 
 	args := flag.Args()
 	fmt.Println(args)
+
+	// setup
+	var f func (*State, *State) int
+	switch *heuristic {
+	case "manhattan":
+		f = ManhattanDist
+	case "conflict":
+		f = Conflict
+	case "right-place":
+		f = RightPlace
+	default:
+		fmt.Println("Invalid heuristic")
+		flag.Usage()
+	}
 
 	// read states
 	start, end, err := InitStates(startFile, endFile)
@@ -46,9 +61,9 @@ func main() {
 	fmt.Println(end.ToStr())
 
 	// setup
-	SetHCalc(func(state *State) int { return RightPlace(state, end) })
+	SetHCalc(func(state *State) int { return f(state, end) })
 
-	os.Exit(0)
+	// os.Exit(0)
 	// solve
 	info := SolvePuzzle(start, end)
 	fmt.Println("RETURN: ", info.End.ToStr())

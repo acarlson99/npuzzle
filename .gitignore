@@ -1,3 +1,6 @@
 /npuzzle
 /TAGS
 /*.txt
+*.out
+*.dSYM
+/test*
