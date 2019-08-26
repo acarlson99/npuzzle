@@ -57,22 +57,24 @@ func main() {
 7 8 0`)
 		os.Exit(1)
 	}
-	fmt.Println(start.ToStr())
-	fmt.Println(end.ToStr())
+	fmt.Println("")
+	fmt.Println("START:")
+	start.PrintBoard()
+	fmt.Println("")
+	fmt.Println("END:")
+	end.PrintBoard()
 
 	// setup
 	SetHCalc(func(state *State) int { return f(state, end) })
 
-	// os.Exit(0)
 	// solve
 	info := SolvePuzzle(start, end)
-	fmt.Println("RETURN: ", info.End.ToStr())
 
-	if info.End != nil {
-		info.End.PrintParents()
-	} else {
-		fmt.Println("Unsolvable")
+	if info == nil {
+		os.Exit(1)
 	}
-	fmt.Printf("%+v\n", info)
-	fmt.Println(info.End.ToStr())
+
+	info.PrintInfo()
+	// fmt.Printf("%+v\n", info)
+	// fmt.Println(info.End.ToStr())
 }

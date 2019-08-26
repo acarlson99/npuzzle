@@ -173,15 +173,20 @@ func (state *State) PrintBoard() uint {
 	return state.PrintBoardWidth(width)
 }
 
-func (state *State) PrintParentsWidth(width uint) uint {
+func (state *State) PrintParentsWidth(width uint) (uint, uint) {
+	var depth uint
 	if state.Parent != nil {
-		offset := state.Parent.PrintParentsWidth(width)/2 + 1
+		offset, numParents := state.Parent.PrintParentsWidth(width)
+		offset = offset/2 + 1
+		depth = numParents + 1
 		fmt.Printf("%*c\n%*c\n", offset, '|', offset, 'V')
 	}
-	return state.PrintBoardWidth(width)
+	return state.PrintBoardWidth(width), depth
 }
 
+// returns number of parents
 func (state *State) PrintParents() uint {
 	width := BoardNumWidth(state.Board)
-	return state.PrintParentsWidth(width)
+	_, numParents := state.PrintParentsWidth(width)
+	return numParents
 }

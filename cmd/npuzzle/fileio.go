@@ -50,12 +50,12 @@ func InitStates(startFile, endFile string) (*State, *State, error) {
 	}
 	end := new(State)
 	if endFile != "" {
-		fmt.Println("End state unspecified.  Inferring")
 		end, err = ReadStateFromFile(endFile)
 		if err != nil {
 			return nil, nil, err
 		}
 	} else {
+		fmt.Println("End state unspecified.  Inferring")
 		board := make([]uint, len(start.Board))
 		copy(board, start.Board)
 		sort.SliceStable(board, func(ii, jj int) bool { return board[ii] < board[jj] })
@@ -82,10 +82,12 @@ func ReadStateFromFile(filename string) (*State, error) {
 // read state from scanner
 func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 	scanner.Split(bufio.ScanLines)
+	var lines []string
 
 	size := 0
 
 	for size == 0 && scanner.Scan() {
+		lines = append(lines, scanner.Text())
 		words := strings.Split(scanner.Text(), " ")
 		for _, word := range words {
 			if len(word) <= 0 {
@@ -120,6 +122,7 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 	posY := 0
 
 	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
 		posX := 0
 		words := strings.Split(scanner.Text(), " ")
 		for _, word := range words {
@@ -168,5 +171,9 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 
 	state := new(State)
 	state.SoftInit(board, emptyX, emptyY, size)
+	fmt.Println("Input file:")
+	for _, line := range lines {
+		fmt.Println(line)
+	}
 	return state, nil
 }

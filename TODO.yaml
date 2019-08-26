@@ -1,8 +1,10 @@
 TODO:
   Implement heuristic algorithms
-  Record data about search
   Implement greedy search
   Implement uniform-cost search
   Fix A* algorithm
   Properly update information when nodes conflict
   Visualizer
+
+DONE:
+  Record data about search
