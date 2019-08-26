@@ -30,9 +30,6 @@ func main() {
 	args := flag.Args()
 	fmt.Println(args)
 
-	// setup
-	SetHCalc(ManhattanDist)
-
 	// read states
 	start, end, err := InitStates(startFile, endFile)
 	if err != nil {
@@ -47,8 +44,11 @@ func main() {
 	}
 	fmt.Println(start.ToStr())
 	fmt.Println(end.ToStr())
-	// os.Exit(0)
 
+	// setup
+	SetHCalc(func(state *State) int { return RightPlace(state, end) })
+
+	os.Exit(0)
 	// solve
 	info := SolvePuzzle(start, end)
 	fmt.Println("RETURN: ", info.End.ToStr())

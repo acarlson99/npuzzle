@@ -58,13 +58,11 @@ func InitStates(startFile, endFile string) (*State, *State, error) {
 	} else {
 		board := make([]uint, len(start.Board))
 		copy(board, start.Board)
-		fmt.Println("SORTING\n", board)
 		sort.SliceStable(board, func(ii, jj int) bool { return board[ii] < board[jj] })
-		fmt.Println("SORTING DONE\n", board)
 		num := board[0]
 		copy(board, board[1:])
 		board[((start.Size-1)*start.Size)+start.Size-1] = num
-		end.Init(board, int(start.Size-1), int(start.Size-1), start.Size)
+		end.SoftInit(board, int(start.Size-1), int(start.Size-1), start.Size)
 	}
 	return start, end, nil
 }
@@ -100,9 +98,9 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 					return nil, err
 				} else {
 					size = int(num)
-					if size == 0 {
+					if size < 2 {
 						return nil,
-							fmt.Errorf("Wait a size of %d is ridiculous. Use a size if at least 2", size)
+							fmt.Errorf("Wait a size of %d is ridiculous. Use a size of at least 2", size)
 					}
 				}
 			} else {
@@ -113,10 +111,9 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 	}
 	if size < 2 {
 		return nil,
-			fmt.Errorf("Wait a size of %d is ridiculous. Use a size if at least 2", size)
+			fmt.Errorf("Wait a size of %d is ridiculous. Use a size of at least 2", size)
 	}
 
-	fmt.Println("Reading board")
 	board := make([]uint, size*size)
 	emptyX := -1
 	emptyY := -1
@@ -170,6 +167,6 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 	}
 
 	state := new(State)
-	state.Init(board, emptyX, emptyY, size)
+	state.SoftInit(board, emptyX, emptyY, size)
 	return state, nil
 }

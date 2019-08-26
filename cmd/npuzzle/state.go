@@ -25,6 +25,8 @@ var (
 	calcH func(*State) int
 )
 
+// takes function that compares to goal state
+// e.g. SetHCalc(func(state *State) int { return RightPlace(state, end) })
 func SetHCalc(f func(*State) int) {
 	calcH = f
 }
@@ -33,7 +35,8 @@ func (state *State) CalcH() int {
 	if calcH == nil {
 		ll := log.New(os.Stderr, "", 0)
 		ll.Println("calcH has not been set")
-		os.Exit(1)
+		// os.Exit(1)
+		return 0
 	}
 	return (calcH(state))
 }
@@ -48,6 +51,19 @@ func (state *State) CalcHash() uint64 {
 	f := fnv.New64a()
 	f.Write([]byte(buffer.String()))
 	return f.Sum64()
+}
+
+func (state *State) SoftInit(board []uint, emptyX, emptyY, size int) {
+	state.Board = make([]uint, size*size)
+	copy(state.Board, board)
+	state.EmptyX = emptyX
+	state.EmptyY = emptyY
+	state.Size = size
+	state.Parent = nil
+	state.Hash = state.CalcHash()
+	state.G = 0
+	state.H = 0
+	state.F = state.G + state.H
 }
 
 func (state *State) Init(board []uint, emptyX, emptyY, size int) {
