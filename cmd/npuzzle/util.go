@@ -2,10 +2,10 @@ package main
 
 import "math"
 
+// (ceiling (log (max 1 num) 10)))
 func NumWidth(n float64) uint {
 	return uint(math.Ceil(math.Log10(n)))
 }
-
 
 func BoardNumWidth(board []uint) uint {
 	var max uint

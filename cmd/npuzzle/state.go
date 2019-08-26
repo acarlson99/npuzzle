@@ -79,7 +79,7 @@ func (state *State) Init(board []uint, emptyX, emptyY, size int) {
 	state.F = state.G + state.H
 }
 
-// TODO: maybe make hashmap to hold children.  Return child if map contains it
+// return copy of state
 func (state *State) copyState() *State {
 	newState := new(State)
 
@@ -97,12 +97,13 @@ func (state *State) copyState() *State {
 
 	// newState.Init(state.Board, state.EmptyX, state.EmptyY, state.Size)
 	newState.Parent = state
-	newState.G = state.G + 1
+	newState.G = state.G
 	newState.H = state.H
 	newState.F = newState.G + newState.H
 	return (newState)
 }
 
+// TODO: maybe make hashmap to hold children.  Return child if map contains it
 func (state *State) shiftTile(x, y int) *State {
 	if state == nil || state.EmptyX+x < 0 || state.EmptyX+x >= state.Size ||
 		state.EmptyY+y < 0 || state.EmptyY+y >= state.Size {
@@ -148,10 +149,10 @@ func (state *State) ToStr() string {
 	if state == nil {
 		return fmt.Sprintf("%+v", state)
 	}
-	return fmt.Sprintf("(%+v %s", state, state.Parent.ToStr())
+	return fmt.Sprintf("%+v\n%s", state, state.Parent.ToStr())
 }
 
-// PRINTING
+// BOARD PRINTING
 func (state *State) PrintBoardWidth(width uint) uint {
 	for ii := 0; ii < state.Size; ii += 1 {
 		fmt.Printf("[")
@@ -166,7 +167,6 @@ func (state *State) PrintBoardWidth(width uint) uint {
 	return uint(2) + uint(state.Size-1) + (width * uint(state.Size))
 }
 
-// format to size (ceiling (log (max 1 num) 10)))
 // returns width of board printed
 func (state *State) PrintBoard() uint {
 	width := BoardNumWidth(state.Board)

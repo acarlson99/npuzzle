@@ -73,4 +73,6 @@ func main() {
 	} else {
 		fmt.Println("Unsolvable")
 	}
+	fmt.Printf("%+v\n", info)
+	fmt.Println(info.End.ToStr())
 }
