@@ -10,6 +10,25 @@ var (
 	verbose bool
 )
 
+// func (state *State) Solvable() bool {
+// 	invCount := 0
+// 	for ii := 0; ii < state.Size * state.Size; ii += 1 {
+// 		for jj := ii + 1; jj < state.Size * state.Size; jj += 1 {
+// 			if state.Board[ii] > state.Board[jj] {
+// 				invCount += 1
+// 			}
+// 		}
+// 	}
+// 	// return invCount
+// 	if len(state.Board) % 2 == 1 {
+// 		return invCount % 2 == 0
+// 	} else if (((state.EmptyY * state.Size) + state.EmptyX) / state.Size) % 2 == 0 {
+// 		return invCount % 2 == 1
+// 	} else {
+// 		return invCount % 2 == 0
+// 	}
+// }
+
 func usage(ret int) {
 	fmt.Println("usage: ./npuzzle [options] [startFile]")
 	flag.PrintDefaults()
@@ -23,7 +42,7 @@ func main() {
 	var endFile, startFile, heuristic, search string
 	flag.StringVar(&endFile, "end", "", "file containing goal state")
 	// flag.StringVar(&startFile, "start", "", "file containing start state")
-	flag.StringVar(&heuristic, "heuristic", "manhattan", "heuristic function (manhattan, conflict, right-place)")
+	flag.StringVar(&heuristic, "heuristic", "atomic", "heuristic function (manhattan, conflict, atomic)")
 	flag.StringVar(&search, "search", "astar", "type of search (astar, uniform, greedy)")
 	flag.BoolVar(&verbose, "verbose", false, "verbose search output")
 
@@ -48,8 +67,8 @@ func main() {
 		heuristicF = ManhattanDist
 	case "conflict":
 		heuristicF = Conflict
-	case "right-place":
-		heuristicF = RightPlace
+	case "atomic":
+		heuristicF = Atomic
 	default:
 		fmt.Println("Invalid heuristic")
 		usage(1)
@@ -80,6 +99,14 @@ func main() {
 7 8 0`)
 		os.Exit(1)
 	}
+
+	// fmt.Println(start.Solvable())
+	// fmt.Println(end.Solvable())
+
+	// if start.Solvable() != end.Solvable() {
+	// 	fmt.Println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA NOT SOLVABLE")
+	// }
+
 	fmt.Println("")
 	fmt.Println("START:")
 	start.PrintBoard()
