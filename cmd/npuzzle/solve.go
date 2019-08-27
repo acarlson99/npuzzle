@@ -11,7 +11,7 @@ func push(state *State, open_states *prque.Prque, info *Info) {
 	if info.Max_opened < info.Num_opened {
 		info.Max_opened = info.Num_opened
 	}
-	open_states.Push(state, -float32(state.F))
+	open_states.Push(state, -float32(state.Score))
 }
 
 func insertClosed(state *State, closed_states map[uint64]*State, info *Info) {
@@ -22,7 +22,7 @@ func insertClosed(state *State, closed_states map[uint64]*State, info *Info) {
 	}
 }
 
-func AStar(start, goal *State) *Info {
+func Solve(start, goal *State) *Info {
 	info := new(Info)
 	info.Start = start
 	info.Goal = goal
@@ -45,6 +45,7 @@ func AStar(start, goal *State) *Info {
 		state := ii.(*State)
 		// fmt.Println("CHECKING")
 		// state.PrintBoard()
+		// fmt.Printf("%+v\n", state)
 		// if isfinal
 		if state.Hash == goal.Hash {
 			// TODO: handle good case
@@ -63,7 +64,8 @@ func AStar(start, goal *State) *Info {
 						// var oldState *State
 						// oldState = closed_states[state.Hash]
 						oldState := closed_states[state.Hash]
-						if state.F < oldState.F {
+						// trying to minimize score
+						if state.Score < oldState.Score {
 							closed_states[state.Hash] = nil
 							info.Num_closed -= 1
 							push(state, open_states, info)

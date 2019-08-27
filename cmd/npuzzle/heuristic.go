@@ -26,11 +26,3 @@ func RightPlace(state *State, end *State) int {
 	}
 	return total
 }
-
-func Uniform(state *State, end *State) int {
-	return 0
-}
-
-func Greedy(state *State, end *State) int {
-	return 0
-}

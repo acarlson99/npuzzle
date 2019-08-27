@@ -27,20 +27,29 @@ func main() {
 	fmt.Println(args)
 
 	// setup
-	var f func (*State, *State) int
+	var heuristicF func (*State, *State) int
 	switch heuristic {
 	case "manhattan":
-		f = ManhattanDist
+		heuristicF = ManhattanDist
 	case "conflict":
-		f = Conflict
+		heuristicF = Conflict
 	case "right-place":
-		f = RightPlace
-	case "greedy":
-		f = Greedy
-	case "uniform":
-		f = Uniform
+		heuristicF = RightPlace
 	default:
 		fmt.Println("Invalid heuristic")
+		usage(1)
+	}
+
+	var searchF func(*State) int
+	switch search {
+	case "astar":
+		searchF = Astar
+	case "greedy":
+		searchF = Greedy
+	case "uniform":
+		searchF = Uniform
+	default:
+		fmt.Println("Invalid search")
 		usage(1)
 	}
 
@@ -64,10 +73,11 @@ func main() {
 	end.PrintBoard()
 
 	// setup
-	SetHCalc(func(state *State) int { return f(state, end) })
+	SetHCalc(func(state *State) int { return heuristicF(state, end) })
+	SetScoreCalc(searchF)
 
 	// solve
-	info := AStar(start, end)
+	info := Solve(start, end)
 
 	if info == nil {
 		os.Exit(1)

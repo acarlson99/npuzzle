@@ -20,7 +20,7 @@ func (info *Info) PrintInfo() {
 	}
 	if info.End != nil {
 		fmt.Println("\nNumber of parents:", info.End.PrintParents()) // TODO: remove this print
-		fmt.Println("Length of solution:", info.End.G)
+		fmt.Println("Length of solution:", info.End.Dist)
 	} else {
 		fmt.Println("Unsolvable")
 	}
