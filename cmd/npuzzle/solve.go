@@ -22,26 +22,6 @@ func insertClosed(state *State, closed_states map[uint64]*State, info *Info) {
 	}
 }
 
-// If in closed_states remove from closed and insert into open_states
-func checkClosed(state *State, open_states *prque.Prque, closed_states map[uint64]*State, info *Info) {
-	// handle conflict here.  Update values if better
-	var oldState *State
-	if closed_states[state.Hash] != nil {
-		oldState = closed_states[state.Hash]
-	} else {
-		oldState = nil
-	}
-	if state.F < oldState.F {
-		if closed_states[state.Hash] != nil {
-			closed_states[state.Hash] = nil
-			info.Num_closed -= 1
-		}
-		push(state, open_states, info)
-		// info.Num_opened += 1
-	}
-	// TODO: check if in open_states as well
-}
-
 func SolvePuzzle(start, goal *State) *Info {
 	info := new(Info)
 	info.Start = start
@@ -79,7 +59,17 @@ func SolvePuzzle(start, goal *State) *Info {
 					continue
 				} else {
 					if closed_states[newState.Hash] != nil {
-						checkClosed(newState, open_states, closed_states, info)
+						// handle conflict here.  Update values if better
+						// var oldState *State
+						// oldState = closed_states[state.Hash]
+						oldState := closed_states[state.Hash]
+						if state.F < oldState.F {
+							closed_states[state.Hash] = nil
+							info.Num_closed -= 1
+							push(state, open_states, info)
+							// info.Num_opened += 1
+						}
+						// TODO: check if in open_states as well
 					} else {
 						// fmt.Println(newState.ToStr())
 						push(newState, open_states, info)

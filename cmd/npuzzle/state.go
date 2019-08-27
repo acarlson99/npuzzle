@@ -103,6 +103,10 @@ func (state *State) copyState() *State {
 	return (newState)
 }
 
+func (state *State) Idx(x, y int) uint {
+	return state.Board[(y * state.Size) + x]
+}
+
 // TODO: maybe make hashmap to hold children.  Return child if map contains it
 func (state *State) shiftTile(x, y int) *State {
 	if state == nil || state.EmptyX+x < 0 || state.EmptyX+x >= state.Size ||

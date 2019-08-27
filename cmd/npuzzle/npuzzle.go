@@ -20,13 +20,7 @@ func main() {
 	flag.StringVar(&startFile, "start", "", "file containing start state")
 	heuristic := flag.String("heuristic", "manhattan", "heuristic function (manhattan, conflict, right-place)")
 
-	help := flag.Bool("h", false, "display help message")
-
 	flag.Parse()
-
-	if *help == true {
-		usage(0)
-	}
 
 	args := flag.Args()
 	fmt.Println(args)
@@ -40,9 +34,13 @@ func main() {
 		f = Conflict
 	case "right-place":
 		f = RightPlace
+	case "greedy":
+		f = Greedy
+	case "uniform":
+		f = Uniform
 	default:
 		fmt.Println("Invalid heuristic")
-		flag.Usage()
+		usage(1)
 	}
 
 	// read states
