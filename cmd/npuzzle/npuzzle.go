@@ -15,10 +15,11 @@ func main() {
 	// handle args
 	flag.Usage = func() { usage(1) }
 
-	var endFile, startFile string
+	var endFile, startFile, heuristic, search string
 	flag.StringVar(&endFile, "end", "", "file containing goal state")
 	flag.StringVar(&startFile, "start", "", "file containing start state")
-	heuristic := flag.String("heuristic", "manhattan", "heuristic function (manhattan, conflict, right-place)")
+	flag.StringVar(&heuristic, "heuristic", "manhattan", "heuristic function (manhattan, conflict, right-place)")
+	flag.StringVar(&search, "search", "astar", "type of search (astar, uniform, greedy)")
 
 	flag.Parse()
 
@@ -27,7 +28,7 @@ func main() {
 
 	// setup
 	var f func (*State, *State) int
-	switch *heuristic {
+	switch heuristic {
 	case "manhattan":
 		f = ManhattanDist
 	case "conflict":
@@ -66,7 +67,7 @@ func main() {
 	SetHCalc(func(state *State) int { return f(state, end) })
 
 	// solve
-	info := SolvePuzzle(start, end)
+	info := AStar(start, end)
 
 	if info == nil {
 		os.Exit(1)

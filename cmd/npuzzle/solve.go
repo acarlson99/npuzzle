@@ -22,7 +22,7 @@ func insertClosed(state *State, closed_states map[uint64]*State, info *Info) {
 	}
 }
 
-func SolvePuzzle(start, goal *State) *Info {
+func AStar(start, goal *State) *Info {
 	info := new(Info)
 	info.Start = start
 	info.Goal = goal
