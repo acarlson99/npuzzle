@@ -45,7 +45,9 @@ func Solve(start, goal *State) *Info {
 		state := ii.(*State)
 		// fmt.Println("CHECKING")
 		// state.PrintBoard()
-		// fmt.Printf("%+v\n", state)
+		if verbose {
+			fmt.Printf("%+v\n", state)
+		}
 		// if isfinal
 		if state.Hash == goal.Hash {
 			// TODO: handle good case

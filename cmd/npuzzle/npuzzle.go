@@ -6,7 +6,12 @@ import (
 	"os"
 )
 
+var (
+	verbose bool
+)
+
 func usage(ret int) {
+	fmt.Println("usage: ./npuzzle [options] [startFile]")
 	flag.PrintDefaults()
 	os.Exit(ret)
 }
@@ -17,17 +22,27 @@ func main() {
 
 	var endFile, startFile, heuristic, search string
 	flag.StringVar(&endFile, "end", "", "file containing goal state")
-	flag.StringVar(&startFile, "start", "", "file containing start state")
+	// flag.StringVar(&startFile, "start", "", "file containing start state")
 	flag.StringVar(&heuristic, "heuristic", "manhattan", "heuristic function (manhattan, conflict, right-place)")
 	flag.StringVar(&search, "search", "astar", "type of search (astar, uniform, greedy)")
+	flag.BoolVar(&verbose, "verbose", false, "verbose search output")
 
 	flag.Parse()
 
 	args := flag.Args()
-	fmt.Println(args)
+	// fmt.Println(args)
+
+	switch len(args) {
+	case 0:
+		startFile = ""
+	case 1:
+		startFile = args[0]
+	default:
+		usage(1)
+	}
 
 	// setup
-	var heuristicF func (*State, *State) int
+	var heuristicF func(*State, *State) int
 	switch heuristic {
 	case "manhattan":
 		heuristicF = ManhattanDist
