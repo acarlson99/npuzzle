@@ -124,6 +124,15 @@ func (state *State) Idx(x, y int) uint {
 	return state.Board[(y*state.Size)+x]
 }
 
+func (state *State) FindN(n uint) (uint, error) {
+	for ii := 0; ii < len(state.Board); ii += 1 {
+		if state.Board[ii] == n {
+			return uint(ii), nil
+		}
+	}
+	return 0, fmt.Errorf("%d not in board state", n)
+}
+
 // TODO: maybe make hashmap to hold children.  Return child if map contains it
 func (state *State) shiftTile(x, y int) *State {
 	if state == nil || (state.Empty%state.Size)+x < 0 || (state.Empty%state.Size)+x >= state.Size ||
