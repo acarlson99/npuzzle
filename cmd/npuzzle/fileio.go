@@ -58,11 +58,11 @@ func InitStates(startFile, endFile string) (*State, *State, error) {
 		fmt.Println("End state unspecified.  Inferring")
 		board := make([]uint, len(start.Board))
 		copy(board, start.Board)
-		sort.SliceStable(board, func(ii, jj int) bool { return board[ii] < board[jj] })
+		sort.Slice(board, func(ii, jj int) bool { return board[ii] < board[jj] })
 		num := board[0]
 		copy(board, board[1:])
 		board[((start.Size-1)*start.Size)+start.Size-1] = num
-		end.SoftInit(board, int(start.Size-1), int(start.Size-1), start.Size)
+		end.SoftInit(board, (start.Size*start.Size)-1, start.Size)
 	}
 	return start, end, nil
 }
@@ -117,8 +117,7 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 	}
 
 	board := make([]uint, size*size)
-	emptyX := -1
-	emptyY := -1
+	empty := 0
 	posY := 0
 
 	for scanner.Scan() {
@@ -142,8 +141,7 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 				board[(posY*size)+posX] = uint(num)
 				// if empty tile
 				if num == 0 {
-					emptyX = posX
-					emptyY = posY
+					empty = posX + (posY * size)
 				}
 				posX += 1
 			}
@@ -157,7 +155,7 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 		}
 	}
 
-	if emptyX < 0 || emptyY < 0 {
+	if empty < 0 {
 		return nil,
 			fmt.Errorf("No empty tile found.  An empty tile is marked with a '0'")
 	} else if posY != size {
@@ -170,7 +168,7 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 	}
 
 	state := new(State)
-	state.SoftInit(board, emptyX, emptyY, size)
+	state.SoftInit(board, empty, size)
 	fmt.Println("Input file:")
 	for _, line := range lines {
 		fmt.Println(line)

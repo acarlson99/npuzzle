@@ -13,14 +13,13 @@ type State struct {
 	H      int // heuristic distance from goal
 	Board  []uint
 	Hash   uint64
-	EmptyX int
-	EmptyY int
+	Empty  int
 	Size   int
 	Parent *State
 }
 
 var (
-	calcH func(*State) int
+	calcH     func(*State) int
 	calcScore func(*State) int
 )
 
@@ -56,11 +55,10 @@ func (state *State) CalcHash() uint64 {
 	return f.Sum64()
 }
 
-func (state *State) SoftInit(board []uint, emptyX, emptyY, size int) {
+func (state *State) SoftInit(board []uint, empty, size int) {
 	state.Board = make([]uint, size*size)
 	copy(state.Board, board)
-	state.EmptyX = emptyX
-	state.EmptyY = emptyY
+	state.Empty = empty
 	state.Size = size
 	state.Parent = nil
 	state.Hash = state.CalcHash()
@@ -69,11 +67,10 @@ func (state *State) SoftInit(board []uint, emptyX, emptyY, size int) {
 	state.Score = 0
 }
 
-func (state *State) Init(board []uint, emptyX, emptyY, size int) {
+func (state *State) Init(board []uint, empty, size int) {
 	state.Board = make([]uint, size*size)
 	copy(state.Board, board)
-	state.EmptyX = emptyX
-	state.EmptyY = emptyY
+	state.Empty = empty
 	state.Size = size
 	state.Parent = nil
 	state.Hash = state.CalcHash()
@@ -93,12 +90,10 @@ func (state *State) copyState() *State {
 	newState.Board = make([]uint, state.Size*state.Size)
 	copy(newState.Board, state.Board)
 	newState.Hash = state.Hash
-	newState.EmptyX = state.EmptyX
-	newState.EmptyY = state.EmptyY
+	newState.Empty = state.Empty
 	newState.Size = state.Size
 	newState.Parent = state.Parent
 
-	// newState.Init(state.Board, state.EmptyX, state.EmptyY, state.Size)
 	newState.Parent = state
 	newState.Dist = state.Dist
 	newState.H = state.H
@@ -112,20 +107,17 @@ func (state *State) Idx(x, y int) uint {
 
 // TODO: maybe make hashmap to hold children.  Return child if map contains it
 func (state *State) shiftTile(x, y int) *State {
-	if state == nil || state.EmptyX+x < 0 || state.EmptyX+x >= state.Size ||
-		state.EmptyY+y < 0 || state.EmptyY+y >= state.Size {
+	if state == nil || (state.Empty%state.Size)+x < 0 || (state.Empty%state.Size)+x >= state.Size ||
+		(state.Empty/state.Size)+y < 0 || (state.Empty/state.Size)+y >= state.Size {
 		return (nil)
 	}
 	newState := state.copyState()
-	newState.EmptyX += x
-	newState.EmptyY += y
+	newState.Empty += x + (y * state.Size)
 
-	newEmptyIdx := (newState.EmptyY * newState.Size) + newState.EmptyX
-	oldEmptyIdx := (state.EmptyY * state.Size) + state.EmptyX
-
-	emptyVal := state.Board[oldEmptyIdx]
-	newState.Board[oldEmptyIdx] = state.Board[newEmptyIdx]
-	newState.Board[newEmptyIdx] = emptyVal
+	// fmt.Println(newState.Empty)
+	emptyVal := state.Board[state.Empty]
+	newState.Board[state.Empty] = state.Board[newState.Empty]
+	newState.Board[newState.Empty] = emptyVal
 
 	newState.Dist += 1
 	newState.H = calcH(newState)
