@@ -79,6 +79,25 @@ func (state *State) Init(board []uint, empty, size int) {
 	state.Score = calcScore(state)
 }
 
+func (state *State) Solvable() bool {
+	invCount := 0
+	for ii := 0; ii < state.Size * state.Size; ii += 1 {
+		for jj := ii + 1; jj < state.Size * state.Size; jj += 1 {
+			if state.Board[ii] != 0 && state.Board[ii] != 0 && state.Board[ii] > state.Board[jj] {
+				invCount += 1
+			}
+		}
+	}
+	// return invCount
+	if state.Size % 2 == 1 {
+		return invCount % 2 == 0
+	} else if (state.Empty / state.Size) % 2 == 0 {
+		return invCount % 2 == 1
+	} else {
+		return invCount % 2 == 0
+	}
+}
+
 // return copy of state
 func (state *State) copyState() *State {
 	newState := new(State)

@@ -1,11 +1,17 @@
 TODO:
-  Check if solvable
-  Implement heuristic algorithms
-  Visualizer?
+  - Validation:
+    - Check if solvable
+    - Fix solvable check
+    - Stress test fileio
+  - Mandatory:
+    - Implement heuristic algorithms
+  - Bonus:
+    - Visualizer?
 
 DONE:
-  Record data about search
-  Implement greedy search
-  Implement uniform-cost search
-  Fix A* algorithm # done I think
-  Properly update information when nodes conflict # pretty sure this is good
+  - Mandatory:
+    - Record data about search
+    - Implement greedy search
+    - Implement uniform-cost search
+    - Fix A* algorithm # done I think
+    - Properly update information when nodes conflict # pretty sure this is good

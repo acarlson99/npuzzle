@@ -10,25 +10,6 @@ var (
 	verbose bool
 )
 
-// func (state *State) Solvable() bool {
-// 	invCount := 0
-// 	for ii := 0; ii < state.Size * state.Size; ii += 1 {
-// 		for jj := ii + 1; jj < state.Size * state.Size; jj += 1 {
-// 			if state.Board[ii] > state.Board[jj] {
-// 				invCount += 1
-// 			}
-// 		}
-// 	}
-// 	// return invCount
-// 	if len(state.Board) % 2 == 1 {
-// 		return invCount % 2 == 0
-// 	} else if (((state.EmptyY * state.Size) + state.EmptyX) / state.Size) % 2 == 0 {
-// 		return invCount % 2 == 1
-// 	} else {
-// 		return invCount % 2 == 0
-// 	}
-// }
-
 func usage(ret int) {
 	fmt.Println("usage: ./npuzzle [options] [startFile]")
 	flag.PrintDefaults()
@@ -100,12 +81,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	// fmt.Println(start.Solvable())
-	// fmt.Println(end.Solvable())
+	fmt.Println(start.Solvable())
+	fmt.Println(end.Solvable())
 
-	// if start.Solvable() != end.Solvable() {
-	// 	fmt.Println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA NOT SOLVABLE")
-	// }
+	if start.Solvable() != end.Solvable() {
+		fmt.Println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA NOT SOLVABLE")
+	}
 
 	fmt.Println("")
 	fmt.Println("START:")
