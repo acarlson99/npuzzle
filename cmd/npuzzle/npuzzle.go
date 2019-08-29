@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 )
 
 var (
@@ -23,14 +24,13 @@ func main() {
 	var endFile, startFile, heuristic, search string
 	flag.StringVar(&endFile, "end", "", "file containing goal state")
 	// flag.StringVar(&startFile, "start", "", "file containing start state")
-	flag.StringVar(&heuristic, "heuristic", "atomic", "heuristic function (manhattan, conflict, atomic)")
+	flag.StringVar(&heuristic, "heuristic", "manhattan", "heuristic function (manhattan, conflict, atomic, max)")
 	flag.StringVar(&search, "search", "astar", "type of search (astar, uniform, greedy)")
 	flag.BoolVar(&verbose, "verbose", false, "verbose search output")
 
 	flag.Parse()
 
 	args := flag.Args()
-	// fmt.Println(args)
 
 	switch len(args) {
 	case 0:
@@ -41,7 +41,7 @@ func main() {
 		usage(1)
 	}
 
-	// setup
+	// set functions
 	var heuristicF func(*State, *State) int
 	switch heuristic {
 	case "manhattan":
@@ -50,6 +50,8 @@ func main() {
 		heuristicF = Conflict
 	case "atomic":
 		heuristicF = Atomic
+	case "max":
+		heuristicF = Max
 	default:
 		fmt.Println("Invalid heuristic")
 		usage(1)
@@ -77,16 +79,16 @@ func main() {
 3 # size of puzzle
 1 2 3 # contents of puzzle
 4 5 6
-7 8 0`)
+7 8 0 # 0 is empty tile`)
 		os.Exit(1)
 	}
 
-	fmt.Println(start.Solvable())
-	fmt.Println(end.Solvable())
+	// setup
+	SetHCalc(func(state *State) int { return heuristicF(state, end) })
+	SetScoreCalc(searchF)
 
-	if start.Solvable() != end.Solvable() {
-		fmt.Println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA NOT SOLVABLE")
-	}
+	start.CalcValues()
+	end.CalcValues()
 
 	fmt.Println("")
 	fmt.Println("START:")
@@ -95,18 +97,20 @@ func main() {
 	fmt.Println("END:")
 	end.PrintBoard()
 
-	// setup
-	SetHCalc(func(state *State) int { return heuristicF(state, end) })
-	SetScoreCalc(searchF)
+	if start.Solvable() != end.Solvable() {
+		fmt.Println("WARNING: STATE NOT SOLVABLE")
+	}
 
 	// solve
-	info := Solve(start, end)
+	startT := time.Now()
+	info, err := Solve(start, end)
+	endT := time.Now()
 
-	if info == nil {
+	if err != nil {
+		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	info.PrintInfo()
-	// fmt.Printf("%+v\n", info)
-	// fmt.Println(info.End.ToStr())
+	info.Print()
+	fmt.Println("Time:", endT.Sub(startT))
 }

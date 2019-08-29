@@ -56,13 +56,17 @@ func InitStates(startFile, endFile string) (*State, *State, error) {
 		}
 	} else {
 		fmt.Println("End state unspecified.  Inferring")
-		board := make([]uint, len(start.Board))
+		board := make([]int, len(start.Board))
 		copy(board, start.Board)
 		sort.Slice(board, func(ii, jj int) bool { return board[ii] < board[jj] })
 		num := board[0]
 		copy(board, board[1:])
 		board[((start.Size-1)*start.Size)+start.Size-1] = num
 		end.SoftInit(board, (start.Size*start.Size)-1, start.Size)
+	}
+	if start.Size != end.Size {
+		return nil, nil,
+			fmt.Errorf("start size %d != end size %d", start.Size, end.Size)
 	}
 	return start, end, nil
 }
@@ -116,7 +120,11 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 			fmt.Errorf("Wait a size of %d is ridiculous. Use a size of at least 2", size)
 	}
 
-	board := make([]uint, size*size)
+	check := make([]int, size*size)
+	for ii, _ := range check {
+		check[ii] = 1
+	}
+	board := make([]int, size*size)
 	empty := 0
 	posY := 0
 
@@ -130,7 +138,7 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 			} else if word[0] == '#' {
 				break
 			} else {
-				num, err := strconv.ParseUint(word, 10, 32)
+				num, err := strconv.ParseInt(word, 10, 32)
 				if err != nil {
 					return nil, err
 				} else if posX >= size || posY >= size {
@@ -138,7 +146,16 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 						fmt.Errorf("Too many arguments for size %d: \"%s\"",
 							size, word)
 				}
-				board[(posY*size)+posX] = uint(num)
+				if num >= int64(size * size) || num < 0 {
+					return nil,
+						fmt.Errorf("Number outsize of range %dx%d: %d", size, size, num)
+				}
+				if check[num] != 1 {
+					return nil,
+						fmt.Errorf("Duplicate detected: %d", num)
+				}
+				check[num] = 0
+				board[(posY*size)+posX] = int(num)
 				// if empty tile
 				if num == 0 {
 					empty = posX + (posY * size)

@@ -22,16 +22,16 @@ func insertClosed(state *State, closed_states map[uint64]*State, info *Info) {
 	}
 }
 
-func Solve(start, goal *State) *Info {
+func Solve(start, goal *State) (*Info, error) {
+	inc := 100000
 	info := new(Info)
 	info.Start = start
 	info.Goal = goal
 	if start == nil || goal == nil {
-		fmt.Println("Start or Goal is nil")
-		return nil
+		return nil, fmt.Errorf("Start or Goal is nil")
 	} else if start.Size != goal.Size {
-		fmt.Println("Start is a different size than goal")
-		return nil
+
+		return nil, fmt.Errorf("Start is a different size than goal")
 	}
 	open_states := prque.New()
 	closed_states := make(map[uint64]*State)
@@ -46,7 +46,13 @@ func Solve(start, goal *State) *Info {
 		// fmt.Println("CHECKING")
 		// state.PrintBoard()
 		if verbose {
-			fmt.Printf("%+v\n", state)
+			// fmt.Printf("%+v\n", state)
+			inc -= 1
+			if inc == 0 {
+				inc = 100000
+				fmt.Println(state.Score)
+				fmt.Printf("%+v\n", state)
+			}
 		}
 		// if isfinal
 		if state.Hash == goal.Hash {
@@ -84,5 +90,5 @@ func Solve(start, goal *State) *Info {
 		}
 
 	}
-	return info
+	return info, nil
 }

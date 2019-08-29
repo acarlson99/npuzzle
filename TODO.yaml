@@ -1,15 +1,17 @@
 TODO:
   - Validation:
-    - Check if solvable
-    - Fix solvable check
     - Stress test fileio
-  - Mandatory:
-    - Implement heuristic algorithms
+    - Quit if puzzle not solvable
+  - Search:
+    - Implement more heuristic algorithms (linear conflict)
   - Bonus:
     - Visualizer?
 
 DONE:
-  - Mandatory:
+  - Validation:
+    - Check if solvable
+    - Fix solvable check
+  - Search:
     - Record data about search
     - Implement greedy search
     - Implement uniform-cost search

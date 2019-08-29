@@ -11,7 +11,7 @@ type State struct {
 	Score  int // F score
 	Dist   int // nodes traversed from start to current node.  G
 	H      int // heuristic distance from goal
-	Board  []uint
+	Board  []int
 	Hash   uint64
 	Empty  int
 	Size   int
@@ -55,20 +55,20 @@ func (state *State) CalcHash() uint64 {
 	return f.Sum64()
 }
 
-func (state *State) SoftInit(board []uint, empty, size int) {
-	state.Board = make([]uint, size*size)
+func (state *State) SoftInit(board []int, empty, size int) {
+	state.Board = make([]int, size*size)
 	copy(state.Board, board)
 	state.Empty = empty
 	state.Size = size
 	state.Parent = nil
-	state.Hash = state.CalcHash()
+	state.Hash = 0
 	state.Dist = 0
 	state.H = 0
 	state.Score = 0
 }
 
-func (state *State) Init(board []uint, empty, size int) {
-	state.Board = make([]uint, size*size)
+func (state *State) Init(board []int, empty, size int) {
+	state.Board = make([]int, size*size)
 	copy(state.Board, board)
 	state.Empty = empty
 	state.Size = size
@@ -79,11 +79,17 @@ func (state *State) Init(board []uint, empty, size int) {
 	state.Score = calcScore(state)
 }
 
+func (state *State) CalcValues() {
+	state.Hash = state.CalcHash()
+	state.H = calcH(state)
+	state.Score = calcScore(state)
+}
+
 func (state *State) Solvable() bool {
 	invCount := 0
 	for ii := 0; ii < state.Size * state.Size; ii += 1 {
 		for jj := ii + 1; jj < state.Size * state.Size; jj += 1 {
-			if state.Board[ii] != 0 && state.Board[ii] != 0 && state.Board[ii] > state.Board[jj] {
+			if state.Board[ii] != 0 && state.Board[jj] != 0 && state.Board[ii] > state.Board[jj] {
 				invCount += 1
 			}
 		}
@@ -106,7 +112,7 @@ func (state *State) copyState() *State {
 	newState.Score = state.Score
 	newState.Dist = state.Dist
 	newState.H = state.H
-	newState.Board = make([]uint, state.Size*state.Size)
+	newState.Board = make([]int, state.Size*state.Size)
 	copy(newState.Board, state.Board)
 	newState.Hash = state.Hash
 	newState.Empty = state.Empty
@@ -120,14 +126,14 @@ func (state *State) copyState() *State {
 	return (newState)
 }
 
-func (state *State) Idx(x, y int) uint {
+func (state *State) Idx(x, y int) int {
 	return state.Board[(y*state.Size)+x]
 }
 
-func (state *State) FindN(n uint) (uint, error) {
-	for ii := 0; ii < len(state.Board); ii += 1 {
+func (state *State) FindN(n int) (int, error) {
+	for ii := 0; ii < state.Size * state.Size; ii += 1 {
 		if state.Board[ii] == n {
-			return uint(ii), nil
+			return ii, nil
 		}
 	}
 	return 0, fmt.Errorf("%d not in board state", n)
@@ -190,6 +196,9 @@ func (state *State) PrintBoardWidth(width uint) uint {
 			fmt.Printf("%*d", width, state.Board[(ii*state.Size)+jj])
 		}
 		fmt.Println("]")
+	}
+	if verbose {
+		fmt.Printf("%+v\n\n", state)
 	}
 	return uint(2) + uint(state.Size-1) + (width * uint(state.Size))
 }

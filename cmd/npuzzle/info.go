@@ -12,7 +12,7 @@ type Info struct { // TODO: rename.  Stores info about search
 	End        *State // ptr to final state. nil if unsolvable
 }
 
-func (info *Info) PrintInfo() {
+func (info *Info) Print() {
 	fmt.Println("")
 	if info == nil {
 		fmt.Println("No information to print")
