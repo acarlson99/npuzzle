@@ -14,9 +14,9 @@ go build ./cmd/npuzzle
 
 ```sh
 ./npuzzle -h # help output
-./npuzzle -start start.txt
+./npuzzle start.txt
 ```
 
 ## NOTES
 
-If you are on nfs file locks don't work. Try setting GOPATH to /tmp/go
+If you are on nfs file locks don't work which may lead to problems building. Try setting GOPATH to /tmp/go

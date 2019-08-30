@@ -32,7 +32,15 @@ func Max(state *State, end *State) int {
 }
 
 func Conflict(state *State, end *State) int {
-	return 0
+	total := 0
+	for ii := 0; ii < state.Size; ii += 1 {
+		for jj := 0; jj < state.Size; jj += 1 {
+			// ns := state.Idx(ii, jj)
+			// ne := state.FindN(ns)
+			total += 1
+		}
+	}
+	return total
 }
 
 func Atomic(state *State, end *State) int {
