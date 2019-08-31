@@ -21,12 +21,14 @@ func main() {
 	// handle args
 	flag.Usage = func() { usage(1) }
 
-	var endFile, startFile, heuristic, search string
-	flag.StringVar(&endFile, "end", "", "file containing goal state")
+	var goalFile, startFile, heuristic, search string
+	var gui bool
+	flag.StringVar(&goalFile, "goal", "", "file containing goal state")
 	// flag.StringVar(&startFile, "start", "", "file containing start state")
 	flag.StringVar(&heuristic, "heuristic", "manhattan", "heuristic function (manhattan, conflict, atomic, max)")
 	flag.StringVar(&search, "search", "astar", "type of search (astar, uniform, greedy)")
 	flag.BoolVar(&verbose, "verbose", false, "verbose search output")
+	flag.BoolVar(&gui, "gui", false, "enable gui")
 
 	flag.Parse()
 
@@ -71,7 +73,7 @@ func main() {
 	}
 
 	// read states
-	start, end, err := InitStates(startFile, endFile)
+	start, goal, err := InitStates(startFile, goalFile)
 	if err != nil {
 		fmt.Println(err)
 		fmt.Println("NOTE: good file looks like this")
@@ -84,26 +86,26 @@ func main() {
 	}
 
 	// setup
-	SetHCalc(func(state *State) int { return heuristicF(state, end) })
+	SetHCalc(func(state *State) int { return heuristicF(state, goal) })
 	SetScoreCalc(searchF)
 
 	start.CalcValues()
-	end.CalcValues()
+	goal.CalcValues()
 
 	fmt.Println("")
 	fmt.Println("START:")
 	start.PrintBoard()
 	fmt.Println("")
-	fmt.Println("END:")
-	end.PrintBoard()
+	fmt.Println("GOAL:")
+	goal.PrintBoard()
 
-	if start.Solvable() != end.Solvable() {
+	if start.Solvable() != goal.Solvable() {
 		fmt.Println("WARNING: STATE NOT SOLVABLE")
 	}
 
 	// solve
 	startT := time.Now()
-	info, err := Solve(start, end)
+	info, err := Solve(start, goal)
 	endT := time.Now()
 
 	if err != nil {
@@ -113,4 +115,7 @@ func main() {
 
 	info.Print()
 	fmt.Println("Time:", endT.Sub(startT))
+	if gui {
+		DisplayGui(info)
+	}
 }

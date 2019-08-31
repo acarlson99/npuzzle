@@ -30,8 +30,8 @@ import (
 // 	}
 // }
 
-// get start and end states
-func InitStates(startFile, endFile string) (*State, *State, error) {
+// get start and goal states
+func InitStates(startFile, goalFile string) (*State, *State, error) {
 	var scanner *bufio.Scanner
 	if startFile == "" {
 		fmt.Println("No start file.  Reading from stdin...")
@@ -48,27 +48,27 @@ func InitStates(startFile, endFile string) (*State, *State, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	end := new(State)
-	if endFile != "" {
-		end, err = ReadStateFromFile(endFile)
+	goal := new(State)
+	if goalFile != "" {
+		goal, err = ReadStateFromFile(goalFile)
 		if err != nil {
 			return nil, nil, err
 		}
 	} else {
-		fmt.Println("End state unspecified.  Inferring")
+		fmt.Println("Goal state unspecified.  Inferring")
 		board := make([]int, len(start.Board))
 		copy(board, start.Board)
 		sort.Slice(board, func(ii, jj int) bool { return board[ii] < board[jj] })
 		num := board[0]
 		copy(board, board[1:])
 		board[((start.Size-1)*start.Size)+start.Size-1] = num
-		end.SoftInit(board, (start.Size*start.Size)-1, start.Size)
+		goal.SoftInit(board, (start.Size*start.Size)-1, start.Size)
 	}
-	if start.Size != end.Size {
+	if start.Size != goal.Size {
 		return nil, nil,
-			fmt.Errorf("start size %d != end size %d", start.Size, end.Size)
+			fmt.Errorf("start size %d != goal size %d", start.Size, goal.Size)
 	}
-	return start, end, nil
+	return start, goal, nil
 }
 
 // read state from file given filename
@@ -146,7 +146,7 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 						fmt.Errorf("Too many arguments for size %d: \"%s\"",
 							size, word)
 				}
-				if num >= int64(size * size) || num < 0 {
+				if num >= int64(size*size) || num < 0 {
 					return nil,
 						fmt.Errorf("Number outsize of range %dx%d: %d", size, size, num)
 				}

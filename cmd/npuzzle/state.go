@@ -24,7 +24,7 @@ var (
 )
 
 // takes function that compares to goal state
-// e.g. SetHCalc(func(state *State) int { return RightPlace(state, end) })
+// e.g. SetHCalc(func(state *State) int { return RightPlace(state, goal) })
 func SetHCalc(f func(*State) int) {
 	calcH = f
 }
@@ -87,20 +87,20 @@ func (state *State) CalcValues() {
 
 func (state *State) Solvable() bool {
 	invCount := 0
-	for ii := 0; ii < state.Size * state.Size; ii += 1 {
-		for jj := ii + 1; jj < state.Size * state.Size; jj += 1 {
+	for ii := 0; ii < state.Size*state.Size; ii += 1 {
+		for jj := ii + 1; jj < state.Size*state.Size; jj += 1 {
 			if state.Board[ii] != 0 && state.Board[jj] != 0 && state.Board[ii] > state.Board[jj] {
 				invCount += 1
 			}
 		}
 	}
 	// return invCount
-	if state.Size % 2 == 1 {
-		return invCount % 2 == 0
-	} else if (state.Empty / state.Size) % 2 == 0 {
-		return invCount % 2 == 1
+	if state.Size%2 == 1 {
+		return invCount%2 == 0
+	} else if (state.Empty/state.Size)%2 == 0 {
+		return invCount%2 == 1
 	} else {
-		return invCount % 2 == 0
+		return invCount%2 == 0
 	}
 }
 
@@ -131,7 +131,7 @@ func (state *State) Idx(x, y int) int {
 }
 
 func (state *State) FindN(n int) (int, error) {
-	for ii := 0; ii < state.Size * state.Size; ii += 1 {
+	for ii := 0; ii < state.Size*state.Size; ii += 1 {
 		if state.Board[ii] == n {
 			return ii, nil
 		}
@@ -216,6 +216,9 @@ func (state *State) PrintParentsWidth(width uint) (uint, uint) {
 		offset = offset/2 + 1
 		depth = numParents + 1
 		fmt.Printf("%*c\n%*c\n", offset, '|', offset, 'V')
+	}
+	if verbose {
+		fmt.Println(depth)
 	}
 	return state.PrintBoardWidth(width), depth
 }

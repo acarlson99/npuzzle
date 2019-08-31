@@ -6,32 +6,32 @@ import (
 )
 
 // heuristic functions compare two states and return H value of first param
-func ManhattanDist(state *State, end *State) int {
+func ManhattanDist(state *State, goal *State) int {
 	total := 0
-	for ii, _ := range state.Board {
+	for ii := range state.Board {
 		if ii/state.Size == 0 || ii%state.Size == 0 {
-			n, err := state.FindN(end.Board[ii])
+			n, err := state.FindN(goal.Board[ii])
 			if err != nil {
-				panic(fmt.Sprintf("%d found in end, but not start", end.Board[ii])) // TODO: address panic
+				panic(fmt.Sprintf("%d found in goal, but not start", goal.Board[ii])) // TODO: address panic
 			}
-			total += int(math.Abs(float64(ii % state.Size - n % state.Size)) +
-				math.Abs(float64(ii / state.Size - n / state.Size)))
+			total += int(math.Abs(float64(ii%state.Size-n%state.Size)) +
+				math.Abs(float64(ii/state.Size-n/state.Size)))
 		}
 	}
 	return total
 }
 
-func Max(state *State, end *State) int {
+func Max(state *State, goal *State) int {
 	total := 0
-	for ii, _ := range state.Board {
-		if ii / state.Size == 0 || ii % state.Size == 0 {
-			total += int(math.Max(float64(Atomic(state, end)), float64(ManhattanDist(state, end))))
+	for ii := range state.Board {
+		if ii/state.Size == 0 || ii%state.Size == 0 {
+			total += int(math.Max(float64(Atomic(state, goal)), float64(ManhattanDist(state, goal))))
 		}
 	}
 	return total
 }
 
-func Conflict(state *State, end *State) int {
+func Conflict(state *State, goal *State) int {
 	total := 0
 	for ii := 0; ii < state.Size; ii += 1 {
 		for jj := 0; jj < state.Size; jj += 1 {
@@ -43,10 +43,10 @@ func Conflict(state *State, end *State) int {
 	return total
 }
 
-func Atomic(state *State, end *State) int {
+func Atomic(state *State, goal *State) int {
 	total := 0
-	for ii, _ := range state.Board {
-		if state.Board[ii] != end.Board[ii] {
+	for ii := range state.Board {
+		if state.Board[ii] != goal.Board[ii] {
 			total += 1
 		}
 	}
