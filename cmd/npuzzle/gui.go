@@ -46,24 +46,30 @@ func DisplayGui(info *Info) {
 	}
 	defer window.Destroy()
 
-	surface, err := window.GetSurface()
-	defer surface.Free()
-	if err != nil {
-		panic(err)
-	}
+	// surface, err := window.GetSurface()
+	// defer surface.Free()
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// ttf setup
 	if err := ttf.Init(); err != nil {
 		panic(err)
 	}
 
-	font, err := ttf.OpenFont("/home/john/Downloads/federalescort.ttf", 24)
+	font, err := ttf.OpenFont("./assets/ComicSans.ttf", 24)
 	if err != nil {
 		panic(err)
 	}
 
-	surf, _ := font.RenderUTF8Solid("HELLO THERE", sdl.Color{255, 100, 200, 255})
-	texture, _ := renderer.CreateTextureFromSurface(surf)
+	fontSurf, err := font.RenderUTF8Solid("HELLO THERE", sdl.Color{255, 100, 200, 255})
+	if err != nil {
+		panic(err) // TODO: address error
+	}
+	texture, err := renderer.CreateTextureFromSurface(fontSurf)
+	if err != nil {
+		panic(err) // TODO: address error
+	}
 
 	renderer.SetDrawColor(255, 0, 0, 255)
 	renderer.Clear()
@@ -103,7 +109,7 @@ func DisplayGui(info *Info) {
 			}
 		}
 		renderer.Clear()
-		surface.FillRect(nil, 0)
+		// surface.FillRect(nil, 0)
 		renderer.SetDrawColor(255, 0, 0, 255)
 		drawState(renderer, state.State)
 		renderer.SetDrawColor(0, 0, 0, 255)

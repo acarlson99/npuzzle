@@ -24,6 +24,7 @@ nfs file locks don't work which may lead to problems building. Try setting GOPAT
 
 May need to install sdl libs
 
-* linux - libsdl2-dev and libsdl2-ttf-dev
+* linux - apt install libsdl2-dev libsdl2-ttf-dev
+* osx - brew install sdl2 sdl2_ttf
 
 If gui breaks build too much try removing gui.go and the bit that calls gui stuff (end of main)
