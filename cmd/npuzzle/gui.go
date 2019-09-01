@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/veandco/go-sdl2/sdl"
 	"github.com/veandco/go-sdl2/ttf"
@@ -10,7 +11,7 @@ import (
 const (
 	wWidth  = 750
 	wHeight = wWidth
-	tilebuf = 18
+	tilebuf = 5
 )
 
 type DLLST struct {
@@ -45,6 +46,7 @@ func DisplayGui(info *Info) {
 		panic(err)
 	}
 	defer window.Destroy()
+	defer renderer.Destroy()
 
 	// surface, err := window.GetSurface()
 	// defer surface.Free()
@@ -60,15 +62,6 @@ func DisplayGui(info *Info) {
 	font, err := ttf.OpenFont("./assets/ComicSans.ttf", 24)
 	if err != nil {
 		panic(err)
-	}
-
-	fontSurf, err := font.RenderUTF8Solid("HELLO THERE", sdl.Color{255, 100, 200, 255})
-	if err != nil {
-		panic(err) // TODO: address error
-	}
-	texture, err := renderer.CreateTextureFromSurface(fontSurf)
-	if err != nil {
-		panic(err) // TODO: address error
 	}
 
 	renderer.SetDrawColor(255, 0, 0, 255)
@@ -110,27 +103,44 @@ func DisplayGui(info *Info) {
 		}
 		renderer.Clear()
 		// surface.FillRect(nil, 0)
-		renderer.SetDrawColor(255, 0, 0, 255)
-		drawState(renderer, state.State)
 		renderer.SetDrawColor(0, 0, 0, 255)
-		renderer.Copy(texture, &sdl.Rect{0, 0, 100, 100}, &sdl.Rect{100, 100, 100, 100})
+		renderer.FillRect(nil)
+		drawState(renderer, font, state.State)
 		renderer.Present()
 		// window.UpdateSurface()
 	}
 }
 
-func drawState(renderer *sdl.Renderer, state *State) {
+func drawState(renderer *sdl.Renderer, font *ttf.Font, state *State) {
 	var tilesize, x, y int32
 	fmt.Println(state)
 	tilesize = int32(wWidth/state.Size - (tilebuf - tilebuf/state.Size))
 	for ii, n := range state.Board {
-		x = int32(GetX(ii, state.Size))
-		y = int32(GetY(ii, state.Size))
-		rect := sdl.Rect{x*tilesize + x*tilebuf, y*tilesize + y*tilebuf, tilesize, tilesize}
+		x = int32(GetY(ii, state.Size))
+		y = int32(GetX(ii, state.Size))
+		// rect := sdl.Rect{x*tilesize + x*tilebuf, y*tilesize + y*tilebuf, tilesize, tilesize}
+		// rect := new(sdl.Rect)
+		rect := &sdl.Rect{x*tilesize + x*tilebuf, y*tilesize + y*tilebuf, tilesize, tilesize}
 		if n != 0 {
-			renderer.FillRect(&rect)
+			renderer.SetDrawColor(0, 255, 255, 255)
+			renderer.FillRect(rect)
+
+			fontSurf, err := font.RenderUTF8Solid(strconv.Itoa(n), sdl.Color{255, 100, 200, 255})
+			if err != nil {
+				panic(err) // TODO: address error
+			}
+			texture, err := renderer.CreateTextureFromSurface(fontSurf)
+			if err != nil {
+				panic(err) // TODO: address error
+			}
+
+			renderer.Copy(texture, &sdl.Rect{0, 0, 100, 100}, rect)
+
+			fontSurf.Free()
+			texture.Destroy()
 		} else {
-			renderer.FillRect(&rect)
+			renderer.SetDrawColor(255, 0, 0, 255)
+			renderer.FillRect(rect)
 		}
 	}
 }
