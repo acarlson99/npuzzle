@@ -4,10 +4,11 @@ import (
 	"fmt"
 
 	"github.com/veandco/go-sdl2/sdl"
+	"github.com/veandco/go-sdl2/ttf"
 )
 
 const (
-	wWidth  = 1023
+	wWidth  = 750
 	wHeight = wWidth
 	tilebuf = 18
 )
@@ -33,13 +34,13 @@ func fillLST(state *State) (*DLLST, *DLLST) {
 }
 
 func DisplayGui(info *Info) {
+	// graphics setup
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		panic(err)
 	}
 	defer sdl.Quit()
 
-	window, err := sdl.CreateWindow("test", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		wWidth, wHeight, sdl.WINDOW_SHOWN)
+	window, renderer, err := sdl.CreateWindowAndRenderer(wWidth, wHeight, sdl.WINDOW_SHOWN)
 	if err != nil {
 		panic(err)
 	}
@@ -51,7 +52,23 @@ func DisplayGui(info *Info) {
 		panic(err)
 	}
 
-	// state := info.End
+	// ttf setup
+	if err := ttf.Init(); err != nil {
+		panic(err)
+	}
+
+	font, err := ttf.OpenFont("/home/john/Downloads/federalescort.ttf", 24)
+	if err != nil {
+		panic(err)
+	}
+
+	surf, _ := font.RenderUTF8Solid("HELLO THERE", sdl.Color{255, 100, 200, 255})
+	texture, _ := renderer.CreateTextureFromSurface(surf)
+
+	renderer.SetDrawColor(255, 0, 0, 255)
+	renderer.Clear()
+
+	// render loop
 	_, base_state := fillLST(info.End)
 
 	state := base_state
@@ -82,19 +99,21 @@ func DisplayGui(info *Info) {
 							state = state.Next
 						}
 					}
-				default:
-					fmt.Printf("[%d ms] Keyboard\ttype:%d\tsym:%c\tmodifiers:%d\tstate:%d\trepeat:%d\n",
-						t.Timestamp, t.Type, t.Keysym.Sym, t.Keysym.Mod, t.State, t.Repeat)
 				}
 			}
 		}
+		renderer.Clear()
 		surface.FillRect(nil, 0)
-		drawState(surface, state.State)
-		window.UpdateSurface()
+		renderer.SetDrawColor(255, 0, 0, 255)
+		drawState(renderer, state.State)
+		renderer.SetDrawColor(0, 0, 0, 255)
+		renderer.Copy(texture, &sdl.Rect{0, 0, 100, 100}, &sdl.Rect{100, 100, 100, 100})
+		renderer.Present()
+		// window.UpdateSurface()
 	}
 }
 
-func drawState(surface *sdl.Surface, state *State) {
+func drawState(renderer *sdl.Renderer, state *State) {
 	var tilesize, x, y int32
 	fmt.Println(state)
 	tilesize = int32(wWidth/state.Size - (tilebuf - tilebuf/state.Size))
@@ -103,9 +122,9 @@ func drawState(surface *sdl.Surface, state *State) {
 		y = int32(GetY(ii, state.Size))
 		rect := sdl.Rect{x*tilesize + x*tilebuf, y*tilesize + y*tilebuf, tilesize, tilesize}
 		if n != 0 {
-			surface.FillRect(&rect, 0xffff0000)
+			renderer.FillRect(&rect)
 		} else {
-			surface.FillRect(&rect, 0xff00ff00)
+			renderer.FillRect(&rect)
 		}
 	}
 }
