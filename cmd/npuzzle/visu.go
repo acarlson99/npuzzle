@@ -108,23 +108,21 @@ func DisplayVisu(info *Info) {
 				running = false
 				break
 			case *sdl.KeyboardEvent:
-				switch t.Keysym.Sym {
-				case sdl.K_e:
-					if t.Type == sdl.KEYDOWN {
+				if t.Type == sdl.KEYDOWN {
+					switch t.Keysym.Sym {
+					case sdl.K_q:
+						fallthrough
+					case sdl.K_ESCAPE:
+						running = false
+					case sdl.K_e:
 						state = base_head
-					}
-				case sdl.K_r:
-					if t.Type == sdl.KEYDOWN {
+					case sdl.K_s:
 						state = base_tail
-					}
-				case sdl.K_RIGHT:
-					if t.Type == sdl.KEYDOWN {
+					case sdl.K_RIGHT:
 						if state.Prev != nil {
 							state = state.Prev
 						}
-					}
-				case sdl.K_LEFT:
-					if t.Type == sdl.KEYDOWN {
+					case sdl.K_LEFT:
 						if state.Next != nil {
 							state = state.Next
 						}
