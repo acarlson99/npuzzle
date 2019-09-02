@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/veandco/go-sdl2/sdl"
@@ -54,37 +53,63 @@ func DisplayGui(info *Info) {
 	// 	panic(err)
 	// }
 
+	// other setup
+	base_head, base_tail := fillLST(info.End)
+
+	state := base_tail
+
 	// ttf setup
 	if err := ttf.Init(); err != nil {
 		panic(err)
 	}
+	defer ttf.Quit()
 
-	font, err := ttf.OpenFont("./assets/ComicSans.ttf", 24)
+	font, err := ttf.OpenFont("./assets/Roboto-Bold.ttf", 48)
 	if err != nil {
 		panic(err)
 	}
+	defer font.Close()
 
 	renderer.SetDrawColor(255, 0, 0, 255)
 	renderer.Clear()
 
+	textures := make([]*sdl.Texture, state.State.Size*state.State.Size)
+	for ii := 0; ii < state.State.Size*state.State.Size; ii += 1 {
+		fontSurf, err := font.RenderUTF8Solid(strconv.Itoa(ii), sdl.Color{255, 100, 200, 255})
+		if err != nil {
+			panic(err) // TODO: address error
+		}
+		texture, err := renderer.CreateTextureFromSurface(fontSurf)
+		if err != nil {
+			panic(err) // TODO: address error
+		}
+		textures[ii] = texture
+		fontSurf.Free()
+	}
+
+	defer func() {
+		for ii := range textures {
+			textures[ii].Destroy()
+		}
+	}()
+
 	// render loop
-	_, base_state := fillLST(info.End)
-
-	state := base_state
-
 	running := true
 	for running {
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 			switch t := event.(type) {
 			case *sdl.QuitEvent:
-				fmt.Println("Quit")
 				running = false
 				break
 			case *sdl.KeyboardEvent:
 				switch t.Keysym.Sym {
+				case sdl.K_e:
+					if t.Type == sdl.KEYDOWN {
+						state = base_head
+					}
 				case sdl.K_r:
 					if t.Type == sdl.KEYDOWN {
-						state = base_state
+						state = base_tail
 					}
 				case sdl.K_RIGHT:
 					if t.Type == sdl.KEYDOWN {
@@ -102,42 +127,30 @@ func DisplayGui(info *Info) {
 			}
 		}
 		renderer.Clear()
-		// surface.FillRect(nil, 0)
 		renderer.SetDrawColor(0, 0, 0, 255)
 		renderer.FillRect(nil)
-		drawState(renderer, font, state.State)
+		drawState(renderer, font, textures, state.State)
 		renderer.Present()
-		// window.UpdateSurface()
 	}
 }
 
-func drawState(renderer *sdl.Renderer, font *ttf.Font, state *State) {
+func drawState(renderer *sdl.Renderer, font *ttf.Font, textures []*sdl.Texture, state *State) {
 	var tilesize, x, y int32
-	fmt.Println(state)
 	tilesize = int32(wWidth/state.Size - (tilebuf - tilebuf/state.Size))
 	for ii, n := range state.Board {
 		x = int32(GetY(ii, state.Size))
 		y = int32(GetX(ii, state.Size))
-		// rect := sdl.Rect{x*tilesize + x*tilebuf, y*tilesize + y*tilebuf, tilesize, tilesize}
-		// rect := new(sdl.Rect)
 		rect := &sdl.Rect{x*tilesize + x*tilebuf, y*tilesize + y*tilebuf, tilesize, tilesize}
 		if n != 0 {
 			renderer.SetDrawColor(0, 255, 255, 255)
 			renderer.FillRect(rect)
-
-			fontSurf, err := font.RenderUTF8Solid(strconv.Itoa(n), sdl.Color{255, 100, 200, 255})
-			if err != nil {
-				panic(err) // TODO: address error
+			if n < 10 {
+				rect.W /= 2
+				rect.X += rect.W / 2
 			}
-			texture, err := renderer.CreateTextureFromSurface(fontSurf)
-			if err != nil {
-				panic(err) // TODO: address error
-			}
-
-			renderer.Copy(texture, &sdl.Rect{0, 0, 100, 100}, rect)
-
-			fontSurf.Free()
-			texture.Destroy()
+			renderer.Copy(textures[n], &sdl.Rect{0, 0, 100, 100}, rect)
+			// fontSurf.Free()
+			// texture.Destroy()
 		} else {
 			renderer.SetDrawColor(255, 0, 0, 255)
 			renderer.FillRect(rect)

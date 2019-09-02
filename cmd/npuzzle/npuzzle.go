@@ -115,7 +115,7 @@ func main() {
 
 	info.Print()
 	fmt.Println("Time:", endT.Sub(startT))
-	if gui {
+	if gui && info.End != nil {
 		DisplayGui(info)
 	}
 }

@@ -8,6 +8,7 @@ TODO:
   - Bonus:
     - Visualizer?
     - Fix issue with sizing.  Add buf on both all sides of tiles
+    - Fix leaks
 
 DONE:
   - Validation:
