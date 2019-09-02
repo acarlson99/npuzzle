@@ -26,7 +26,7 @@ func (info *Info) Print() {
 		fmt.Println("\nNumber of parents:", numParents) // TODO: remove this print
 		fmt.Println("Length of solution:", info.End.Dist)
 		if numParents != uint(info.End.Dist) {
-			log.Fatalln("numParents != info.End.Dist")
+			defer log.Fatalln("numParents != info.End.Dist") // TODO: remove
 		}
 	} else {
 		fmt.Println("Unsolvable")

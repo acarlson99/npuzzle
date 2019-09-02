@@ -25,7 +25,7 @@ func main() {
 	var visu bool
 	flag.StringVar(&goalFile, "goal", "", "file containing goal state")
 	// flag.StringVar(&startFile, "start", "", "file containing start state")
-	flag.StringVar(&heuristic, "heuristic", "manhattan", "heuristic function (manhattan, conflict, atomic, max)")
+	flag.StringVar(&heuristic, "heuristic", "max", "heuristic function (max, atomic, manhattan, conflict)")
 	flag.StringVar(&search, "search", "astar", "type of search (astar, uniform, greedy)")
 	flag.BoolVar(&verbose, "verbose", false, "verbose search output")
 	flag.BoolVar(&visu, "visu", false, "enable visu")
@@ -49,13 +49,13 @@ func main() {
 	case "manhattan":
 		heuristicF = ManhattanDist
 	case "conflict":
-		heuristicF = Conflict
+		heuristicF = LinearConflict
 	case "atomic":
-		heuristicF = Atomic
+		heuristicF = AtomicDist
 	case "max":
-		heuristicF = Max
+		heuristicF = MaxDist
 	default:
-		fmt.Println("Invalid heuristic")
+		fmt.Println("Invalid heuristic:", heuristic)
 		usage(1)
 	}
 
@@ -68,7 +68,7 @@ func main() {
 	case "uniform":
 		searchF = Uniform
 	default:
-		fmt.Println("Invalid search")
+		fmt.Println("Invalid search:", search)
 		usage(1)
 	}
 

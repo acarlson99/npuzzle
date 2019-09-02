@@ -21,32 +21,26 @@ func ManhattanDist(state *State, goal *State) int {
 	return total
 }
 
-func Max(state *State, goal *State) int {
+func AtomicDist(state *State, goal *State) int {
 	total := 0
 	for ii := range state.Board {
-		if ii/state.Size == 0 || ii%state.Size == 0 {
-			total += int(math.Max(float64(Atomic(state, goal)), float64(ManhattanDist(state, goal))))
-		}
-	}
-	return total
-}
-
-func Conflict(state *State, goal *State) int {
-	total := 0
-	for ii := 0; ii < state.Size; ii += 1 {
-		for jj := 0; jj < state.Size; jj += 1 {
-			// ns := state.Idx(ii, jj)
-			// ne := state.FindN(ns)
+		if state.Board[ii] != goal.Board[ii] {
 			total += 1
 		}
 	}
 	return total
 }
 
-func Atomic(state *State, goal *State) int {
+func MaxDist(state *State, goal *State) int {
+	return int(math.Max(float64(AtomicDist(state, goal)), float64(ManhattanDist(state, goal))))
+}
+
+func LinearConflict(state *State, goal *State) int {
 	total := 0
-	for ii := range state.Board {
-		if state.Board[ii] != goal.Board[ii] {
+	for ii := 0; ii < state.Size; ii += 1 {
+		for jj := 0; jj < state.Size; jj += 1 {
+			// ns := state.Idx(ii, jj)
+			// ne := state.FindN(ns)
 			total += 1
 		}
 	}

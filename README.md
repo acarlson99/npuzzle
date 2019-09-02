@@ -4,6 +4,7 @@
 
 * go v 1.12
 * sdl2
+* sdl2 ttf
 
 ## Build
 
@@ -17,6 +18,66 @@ go build ./cmd/npuzzle
 ./npuzzle -h # help output
 ./npuzzle start.txt
 ```
+
+## Algorithm
+
+### Search
+
+* Greedy
+
+	* Not optimal
+
+	* Fast
+
+	* Path based only on H (heuristic) score
+
+	* Heuristic DFS
+
+* Uniform
+
+	* Optimal
+
+	* Slow
+
+	* Entirely ignores H score
+
+	* BFS
+
+* Astar
+
+	* Optimal
+
+	* Fast
+
+	* Path based on distance from beginning and H score
+
+### Heuristic
+
+* Atomic
+
+	* Atomic distance
+
+	* Number of tiles out of place
+
+* Manhattan
+
+	* Manhattan Distance from goal
+
+* Max
+
+	* Max of Manhattan and Atomic
+
+* Conflict
+
+	* Linear Conflict
+
+## Visu
+
+* e - end of solution
+* s - start of solution
+* right - step forward
+* left - step backward
+* q esc - quit
 
 ## TROUBLESHOOTING
 
