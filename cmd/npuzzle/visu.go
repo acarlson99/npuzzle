@@ -142,8 +142,8 @@ func drawState(renderer *sdl.Renderer, font *ttf.Font, textures []*sdl.Texture, 
 	var tilesize, x, y int32
 	tilesize = int32(wWidth/state.Size - (tilebuf - tilebuf/state.Size))
 	for ii, n := range state.Board {
-		x = int32(GetY(ii, state.Size))
-		y = int32(GetX(ii, state.Size))
+		x = int32(GetX(ii, state.Size))
+		y = int32(GetY(ii, state.Size))
 		rect := &sdl.Rect{x*tilesize + x*tilebuf, y*tilesize + y*tilebuf, tilesize, tilesize}
 		if n != 0 {
 			renderer.SetDrawColor(64, 110, 142, 255)

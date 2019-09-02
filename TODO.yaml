@@ -2,9 +2,6 @@ TODO:
   - Validation:
     - Stress test fileio
     - Quit if puzzle not solvable
-  - Search:
-    - Implement more heuristic algorithms (linear conflict)
-    - Refactor.  Make score, H, G floats
   - Bonus:
     - Fix issue with sizing.  Perhaps add buf on both all sides of tiles
 
@@ -18,6 +15,8 @@ DONE:
     - Implement uniform-cost search
     - Fix A* algorithm # done I think
     - Properly update information when nodes conflict # pretty sure this is good
+    - Implement more heuristic algorithms (linear conflict)
+    - Refactor.  Make score, H, G floats
   - Bonus:
     - Visualizer?
     - Fix leaks

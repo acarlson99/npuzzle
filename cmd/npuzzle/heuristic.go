@@ -51,7 +51,7 @@ func LinearConflict(state, goal *State) float64 {
 				panic(err) // TODO: address error
 			}
 			for kk := jj + 1; kk < state.Size; kk += 1 {
-				if n1/state.Size == ii {
+				if GetY(n1, state.Size) == ii {
 					idx, err := goal.FindN(state.Idx(kk, ii))
 					if err != nil {
 						panic(err) // TODO: address error
@@ -60,7 +60,7 @@ func LinearConflict(state, goal *State) float64 {
 						total += 1
 					}
 				}
-				if n2%state.Size == ii {
+				if GetX(n2, state.Size) == ii {
 					idx, err := goal.FindN(state.Idx(ii, kk))
 					if err != nil {
 						panic(err) // TODO: address error
