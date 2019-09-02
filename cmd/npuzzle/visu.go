@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/veandco/go-sdl2/sdl"
@@ -34,6 +35,12 @@ func fillLST(state *State) (*DLLST, *DLLST) {
 }
 
 func DisplayVisu(info *Info) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println(r)
+		}
+	}()
+
 	// graphics setup
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		panic(err)
@@ -64,7 +71,7 @@ func DisplayVisu(info *Info) {
 	}
 	defer ttf.Quit()
 
-	font, err := ttf.OpenFont("./assets/Bebas-Regular.ttf", 48)
+	font, err := ttf.OpenFont("./assets/Bebas-Regular.ttf", 64)
 	if err != nil {
 		panic(err)
 	}
@@ -74,7 +81,7 @@ func DisplayVisu(info *Info) {
 
 	textures := make([]*sdl.Texture, state.State.Size*state.State.Size)
 	for ii := 0; ii < state.State.Size*state.State.Size; ii += 1 {
-		fontSurf, err := font.RenderUTF8Solid(strconv.Itoa(ii), sdl.Color{203, 247, 237, 255})
+		fontSurf, err := font.RenderUTF8Blended(strconv.Itoa(ii), sdl.Color{203, 247, 237, 180})
 		if err != nil {
 			panic(err) // TODO: address error
 		}
