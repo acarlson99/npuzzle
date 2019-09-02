@@ -4,6 +4,7 @@ TODO:
     - Quit if puzzle not solvable
   - Search:
     - Implement more heuristic algorithms (linear conflict)
+    - Refactor.  Make score, H, G floats
   - Bonus:
     - Fix issue with sizing.  Perhaps add buf on both all sides of tiles
 

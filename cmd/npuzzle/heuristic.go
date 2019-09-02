@@ -21,7 +21,7 @@ func ManhattanDist(state *State, goal *State) int {
 	return total
 }
 
-func AtomicDist(state *State, goal *State) int {
+func HammingDist(state *State, goal *State) int {
 	total := 0
 	for ii := range state.Board {
 		if state.Board[ii] != goal.Board[ii] {
@@ -32,7 +32,7 @@ func AtomicDist(state *State, goal *State) int {
 }
 
 func MaxDist(state *State, goal *State) int {
-	return int(math.Max(float64(AtomicDist(state, goal)), float64(ManhattanDist(state, goal))))
+	return int(math.Max(float64(HammingDist(state, goal)), float64(ManhattanDist(state, goal))))
 }
 
 func LinearConflict(state *State, goal *State) int {

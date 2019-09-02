@@ -53,9 +53,9 @@ go build ./cmd/npuzzle
 
 ### Heuristic
 
-* Atomic
+* Hamming
 
-	* Atomic distance
+	* Hamming distance
 
 	* Number of tiles out of place
 
@@ -65,7 +65,7 @@ go build ./cmd/npuzzle
 
 * Max
 
-	* Max of Manhattan and Atomic
+	* Max of Manhattan and Hamming
 
 * Conflict
 
@@ -78,6 +78,12 @@ go build ./cmd/npuzzle
 * right - step forward
 * left - step backward
 * q esc - quit
+
+## Resources
+
+* [astar](https://en.wikipedia.org/wiki/A*_search_algorithm)
+
+* [heuristics](https://algorithmsinsight.wordpress.com/graph-theory-2/a-star-in-general/implementing-a-star-to-solve-n-puzzle/)
 
 ## TROUBLESHOOTING
 

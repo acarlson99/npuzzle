@@ -23,12 +23,14 @@ func main() {
 
 	var goalFile, startFile, heuristic, search string
 	var visu bool
+	var multiplier float64
 	flag.StringVar(&goalFile, "goal", "", "file containing goal state")
 	// flag.StringVar(&startFile, "start", "", "file containing start state")
-	flag.StringVar(&heuristic, "heuristic", "max", "heuristic function (max, atomic, manhattan, conflict)")
+	flag.StringVar(&heuristic, "heuristic", "max", "heuristic function (max, hamming, manhattan, conflict)")
 	flag.StringVar(&search, "search", "astar", "type of search (astar, uniform, greedy)")
 	flag.BoolVar(&verbose, "verbose", false, "verbose search output")
 	flag.BoolVar(&visu, "visu", false, "enable visu")
+	flag.Float64Var(&multiplier, "multiplier", 1.0, "heuristic multiplier")
 
 	flag.Parse()
 
@@ -50,8 +52,8 @@ func main() {
 		heuristicF = ManhattanDist
 	case "conflict":
 		heuristicF = LinearConflict
-	case "atomic":
-		heuristicF = AtomicDist
+	case "hamming":
+		heuristicF = HammingDist
 	case "max":
 		heuristicF = MaxDist
 	default:
@@ -86,7 +88,7 @@ func main() {
 	}
 
 	// setup
-	SetHCalc(func(state *State) int { return heuristicF(state, goal) })
+	SetHCalc(func(state *State) int { return int(float64(heuristicF(state, goal)) * multiplier) })
 	SetScoreCalc(searchF)
 
 	start.CalcValues()
