@@ -26,7 +26,7 @@ func main() {
 	var multiplier float64
 	flag.StringVar(&goalFile, "goal", "", "file containing goal state")
 	// flag.StringVar(&startFile, "start", "", "file containing start state")
-	flag.StringVar(&heuristic, "heuristic", "max", "heuristic function (max, hamming, manhattan, conflict)")
+	flag.StringVar(&heuristic, "heuristic", "max", "heuristic function (max, hamming, manhattan, conflict, conflict-manhattan)")
 	flag.StringVar(&search, "search", "astar", "type of search (astar, uniform, greedy)")
 	flag.BoolVar(&verbose, "verbose", false, "verbose search output")
 	flag.BoolVar(&visu, "visu", false, "enable visu")
@@ -46,7 +46,7 @@ func main() {
 	}
 
 	// set functions
-	var heuristicF func(*State, *State) int
+	var heuristicF func(*State, *State) float64
 	switch heuristic {
 	case "manhattan":
 		heuristicF = ManhattanDist
@@ -56,12 +56,14 @@ func main() {
 		heuristicF = HammingDist
 	case "max":
 		heuristicF = MaxDist
+	case "conflict-manhattan":
+		heuristicF = ConflictManhattan
 	default:
 		fmt.Println("Invalid heuristic:", heuristic)
 		usage(1)
 	}
 
-	var searchF func(*State) int
+	var searchF func(*State) float64
 	switch search {
 	case "astar":
 		searchF = Astar
@@ -88,7 +90,7 @@ func main() {
 	}
 
 	// setup
-	SetHCalc(func(state *State) int { return int(float64(heuristicF(state, goal)) * multiplier) })
+	SetHCalc(func(state *State) float64 { return heuristicF(state, goal) * multiplier })
 	SetScoreCalc(searchF)
 
 	start.CalcValues()

@@ -71,6 +71,12 @@ go build ./cmd/npuzzle
 
 	* Linear Conflict
 
+* Conflict-Manhattan
+
+	* Linear Conflict * 2 + Manhattan
+
+	* Able to solve 4-puzzles relatively quickly
+
 ## Visu
 
 * e - end of solution

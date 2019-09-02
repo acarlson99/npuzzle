@@ -8,9 +8,9 @@ import (
 )
 
 type State struct {
-	Score  int // F score
-	Dist   int // nodes traversed from start to current node.  G
-	H      int // heuristic distance from goal
+	Score  float64 // F score
+	Dist   float64 // nodes traversed from start to current node.  G
+	H      float64 // heuristic distance from goal
 	Board  []int
 	Hash   uint64
 	Empty  int
@@ -19,17 +19,17 @@ type State struct {
 }
 
 var (
-	calcH     func(*State) int
-	calcScore func(*State) int
+	calcH     func(*State) float64
+	calcScore func(*State) float64
 )
 
 // takes function that compares to goal state
 // e.g. SetHCalc(func(state *State) int { return RightPlace(state, goal) })
-func SetHCalc(f func(*State) int) {
+func SetHCalc(f func(*State) float64) {
 	calcH = f
 }
 
-func SetScoreCalc(f func(*State) int) {
+func SetScoreCalc(f func(*State) float64) {
 	calcScore = f
 }
 
