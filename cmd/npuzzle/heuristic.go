@@ -40,6 +40,38 @@ func MaxDist(state, goal *State) float64 {
 func LinearConflict(state, goal *State) float64 {
 	var total float64
 	total = 0
+	for ii := 0; ii < state.Size; ii += 1 {
+		for jj := 0; jj < state.Size; jj += 1 {
+			n1, err := goal.FindN(state.Idx(jj, ii))
+			if err != nil {
+				panic(err) // TODO: address error
+			}
+			n2, err := goal.FindN(state.Idx(ii, jj))
+			if err != nil {
+				panic(err) // TODO: address error
+			}
+			for kk := jj + 1; kk < state.Size; kk += 1 {
+				if n1/state.Size == ii {
+					idx, err := goal.FindN(state.Idx(kk, ii))
+					if err != nil {
+						panic(err) // TODO: address error
+					}
+					if idx/state.Size == ii && n1%state.Size > idx%state.Size {
+						total += 1
+					}
+				}
+				if n2%state.Size == ii {
+					idx, err := goal.FindN(state.Idx(ii, kk))
+					if err != nil {
+						panic(err) // TODO: address error
+					}
+					if idx%state.Size == ii && n2/state.Size > idx/state.Size {
+						total += 1
+					}
+				}
+			}
+		}
+	}
 	return total
 }
 
