@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 type Info struct { // TODO: rename.  Stores info about search
 	Num_opened int // total num of opened states
@@ -19,8 +22,12 @@ func (info *Info) Print() {
 		return
 	}
 	if info.End != nil {
-		fmt.Println("\nNumber of parents:", info.End.PrintParents()) // TODO: remove this print
+		numParents := info.End.PrintParents()
+		fmt.Println("\nNumber of parents:", numParents) // TODO: remove this print
 		fmt.Println("Length of solution:", info.End.Dist)
+		if numParents != uint(info.End.Dist) {
+			log.Fatalln("numParents != info.End.Dist")
+		}
 	} else {
 		fmt.Println("Unsolvable")
 	}

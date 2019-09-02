@@ -1,14 +1,11 @@
 TODO:
-  - fix go.mod to account for gui stuff
   - Validation:
     - Stress test fileio
     - Quit if puzzle not solvable
   - Search:
     - Implement more heuristic algorithms (linear conflict)
   - Bonus:
-    - Visualizer?
-    - Fix issue with sizing.  Add buf on both all sides of tiles
-    - Fix leaks
+    - Fix issue with sizing.  Perhaps add buf on both all sides of tiles
 
 DONE:
   - Validation:
@@ -20,3 +17,8 @@ DONE:
     - Implement uniform-cost search
     - Fix A* algorithm # done I think
     - Properly update information when nodes conflict # pretty sure this is good
+  - Bonus:
+    - Visualizer?
+    - Fix leaks
+  - Other:
+    - fix go.mod to account for gui stuff

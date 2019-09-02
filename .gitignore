@@ -5,3 +5,4 @@
 *.dSYM
 /test*
 /go.sum
+._*

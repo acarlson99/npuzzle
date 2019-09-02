@@ -33,7 +33,7 @@ func fillLST(state *State) (*DLLST, *DLLST) {
 	return lst, tail
 }
 
-func DisplayGui(info *Info) {
+func DisplayVisu(info *Info) {
 	// graphics setup
 	if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
 		panic(err)
@@ -64,18 +64,17 @@ func DisplayGui(info *Info) {
 	}
 	defer ttf.Quit()
 
-	font, err := ttf.OpenFont("./assets/Roboto-Bold.ttf", 48)
+	font, err := ttf.OpenFont("./assets/Bebas-Regular.ttf", 48)
 	if err != nil {
 		panic(err)
 	}
 	defer font.Close()
 
-	renderer.SetDrawColor(255, 0, 0, 255)
 	renderer.Clear()
 
 	textures := make([]*sdl.Texture, state.State.Size*state.State.Size)
 	for ii := 0; ii < state.State.Size*state.State.Size; ii += 1 {
-		fontSurf, err := font.RenderUTF8Solid(strconv.Itoa(ii), sdl.Color{255, 100, 200, 255})
+		fontSurf, err := font.RenderUTF8Solid(strconv.Itoa(ii), sdl.Color{203, 247, 237, 255})
 		if err != nil {
 			panic(err) // TODO: address error
 		}
@@ -142,8 +141,9 @@ func drawState(renderer *sdl.Renderer, font *ttf.Font, textures []*sdl.Texture, 
 		y = int32(GetX(ii, state.Size))
 		rect := &sdl.Rect{x*tilesize + x*tilebuf, y*tilesize + y*tilebuf, tilesize, tilesize}
 		if n != 0 {
-			renderer.SetDrawColor(0, 255, 255, 255)
+			renderer.SetDrawColor(64, 110, 142, 255)
 			renderer.FillRect(rect)
+			// fix weird sizing issues with 0-9
 			if n < 10 {
 				rect.W /= 2
 				rect.X += rect.W / 2
@@ -152,7 +152,7 @@ func drawState(renderer *sdl.Renderer, font *ttf.Font, textures []*sdl.Texture, 
 			// fontSurf.Free()
 			// texture.Destroy()
 		} else {
-			renderer.SetDrawColor(255, 0, 0, 255)
+			renderer.SetDrawColor(22, 25, 37, 255)
 			renderer.FillRect(rect)
 		}
 	}

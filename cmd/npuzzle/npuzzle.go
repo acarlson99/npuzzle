@@ -22,13 +22,13 @@ func main() {
 	flag.Usage = func() { usage(1) }
 
 	var goalFile, startFile, heuristic, search string
-	var gui bool
+	var visu bool
 	flag.StringVar(&goalFile, "goal", "", "file containing goal state")
 	// flag.StringVar(&startFile, "start", "", "file containing start state")
 	flag.StringVar(&heuristic, "heuristic", "manhattan", "heuristic function (manhattan, conflict, atomic, max)")
 	flag.StringVar(&search, "search", "astar", "type of search (astar, uniform, greedy)")
 	flag.BoolVar(&verbose, "verbose", false, "verbose search output")
-	flag.BoolVar(&gui, "gui", false, "enable gui")
+	flag.BoolVar(&visu, "visu", false, "enable visu")
 
 	flag.Parse()
 
@@ -115,7 +115,7 @@ func main() {
 
 	info.Print()
 	fmt.Println("Time:", endT.Sub(startT))
-	if gui && info.End != nil {
-		DisplayGui(info)
+	if visu && info.End != nil {
+		DisplayVisu(info)
 	}
 }
