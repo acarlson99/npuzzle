@@ -19,6 +19,8 @@ go build ./cmd/npuzzle
 ./npuzzle start.txt
 ```
 
+Example puzzles are in `puzzles/`
+
 ## Algorithm
 
 ### Search
@@ -79,11 +81,11 @@ go build ./cmd/npuzzle
 
 ## Visu
 
-* e - end of solution
-* s - start of solution
-* right - step forward
-* left - step backward
-* q esc - quit
+* `e` - end of solution
+* `s` - start of solution
+* `right` - step forward
+* `left` - step backward
+* `q` `esc` - quit
 
 ## Resources
 
@@ -97,7 +99,7 @@ nfs file locks don't work which may lead to problems building. Try setting GOPAT
 
 May need to install sdl libs
 
-* linux - apt install libsdl2-dev libsdl2-ttf-dev
+* ubuntu - apt install libsdl2-dev libsdl2-ttf-dev
 * osx - brew install sdl2 sdl2_ttf
 
 If visualizer breaks build too much try removing visu.go and the bit that calls visu stuff (end of main)

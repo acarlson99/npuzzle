@@ -30,7 +30,7 @@ func (info *Info) Print() {
 	}
 	if info.End != nil {
 		numParents := info.End.PrintParents()
-		// fmt.Println("\nNumber of parents:", numParents) // TODO: remove this print
+		// fmt.Println("\nNumber of parents:", numParents)
 		fmt.Println("Length of solution:", info.End.Dist)
 		if numParents != uint(info.End.Dist) {
 			defer log.Fatalln(fmt.Sprint("numParents = %d; info.End.Dist = %d",
