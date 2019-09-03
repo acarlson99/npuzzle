@@ -30,10 +30,11 @@ func (info *Info) Print() {
 	}
 	if info.End != nil {
 		numParents := info.End.PrintParents()
-		fmt.Println("\nNumber of parents:", numParents) // TODO: remove this print
+		// fmt.Println("\nNumber of parents:", numParents) // TODO: remove this print
 		fmt.Println("Length of solution:", info.End.Dist)
 		if numParents != uint(info.End.Dist) {
-			defer log.Fatalln("numParents != info.End.Dist") // TODO: remove
+			defer log.Fatalln(fmt.Sprint("numParents = %d; info.End.Dist = %d",
+				numParents, info.End.Dist))
 		}
 	} else {
 		fmt.Println("Unsolvable")
@@ -58,9 +59,8 @@ func main() {
 	var visu bool
 	var multiplier float64
 	flag.StringVar(&goalFile, "goal", "", "file containing goal state")
-	// flag.StringVar(&startFile, "start", "", "file containing start state")
-	flag.StringVar(&heuristic, "heuristic", "max", "heuristic function (max, hamming, manhattan, conflict, conflict-manhattan)")
-	flag.StringVar(&search, "search", "astar", "type of search (astar, uniform, greedy)")
+	flag.StringVar(&heuristic, "heuristic", "conflict-manhattan", "heuristic function (hamming, manhattan, max, conflict, conflict-manhattan)")
+	flag.StringVar(&search, "search", "astar", "type of search (uniform, greedy, astar)")
 	flag.BoolVar(&verbose, "verbose", false, "verbose search output")
 	flag.BoolVar(&visu, "visu", false, "enable visu")
 	flag.Float64Var(&multiplier, "multiplier", 1.0, "heuristic multiplier")

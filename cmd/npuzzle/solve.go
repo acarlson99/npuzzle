@@ -43,22 +43,16 @@ func Solve(start, goal *State) (*Info, error) {
 		info.Num_opened -= 1
 
 		state := ii.(*State)
-		// fmt.Println("CHECKING")
-		// state.PrintBoard()
 		if verbose {
-			// fmt.Printf("%+v\n", state)
 			inc -= 1
 			if inc == 0 {
 				inc = 100000
-				// fmt.Println(state.Score)
 				fmt.Printf("%+v\n", state)
 			}
 		}
 		// if isfinal
 		if state.Hash == goal.Hash {
-			// TODO: handle good case
 			info.End = state
-			// return info
 		} else {
 			insertClosed(state, closed_states, info)
 			for _, newState := range []*State{state.MoveUp(), state.MoveDown(),
@@ -66,11 +60,9 @@ func Solve(start, goal *State) (*Info, error) {
 				if newState == nil || closed_states[newState.Hash] != nil {
 					continue
 				} else {
-					// fmt.Println(newState.ToStr())
 					push(newState, open_states, info)
 				}
 			}
-			// fmt.Println(closed_states[state.Hash].ToStr())
 		}
 
 	}
