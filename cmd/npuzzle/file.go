@@ -166,7 +166,7 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 		// if it read a line of the map
 		if posX == size {
 			posY += 1
-		} else {
+		} else if posX != 0 {
 			return nil,
 				fmt.Errorf("Not enough arguments for size %d: \"%s\"", size, scanner.Text())
 		}
