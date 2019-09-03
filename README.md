@@ -69,7 +69,7 @@ go build ./cmd/npuzzle
 
 * Conflict
 
-	* Linear Conflict
+	* Tiles conflict if in same row or column, goal in row/column, blocked by other tile
 
 * Conflict-Manhattan
 
