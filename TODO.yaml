@@ -12,12 +12,12 @@ DONE:
     - Record data about search
     - Implement greedy search
     - Implement uniform-cost search
-    - Fix A* algorithm # done I think
-    - Properly update information when nodes conflict # pretty sure this is good
+    - Fix A* algorithm
+    - Properly update information when nodes conflict
     - Implement more heuristic algorithms (linear conflict)
     - Refactor.  Make score, H, G floats
   - Bonus:
     - Visualizer?
-    - Fix leaks
+    - Fix leaks # Don't think I can fix leaks.  I think it's the lib being bad
   - Other:
     - fix go.mod to account for gui stuff
