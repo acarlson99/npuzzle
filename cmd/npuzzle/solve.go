@@ -50,7 +50,7 @@ func Solve(start, goal *State) (*Info, error) {
 			inc -= 1
 			if inc == 0 {
 				inc = 100000
-				fmt.Println(state.Score)
+				// fmt.Println(state.Score)
 				fmt.Printf("%+v\n", state)
 			}
 		}
@@ -63,27 +63,11 @@ func Solve(start, goal *State) (*Info, error) {
 			insertClosed(state, closed_states, info)
 			for _, newState := range []*State{state.MoveUp(), state.MoveDown(),
 				state.MoveLeft(), state.MoveRight()} {
-				if newState == nil {
-					// fmt.Println("Newstate nil")
+				if newState == nil || closed_states[newState.Hash] != nil {
 					continue
 				} else {
-					if closed_states[newState.Hash] != nil {
-						// handle conflict here.  Update values if better
-						// var oldState *State
-						// oldState = closed_states[state.Hash]
-						oldState := closed_states[state.Hash]
-						// trying to minimize score
-						if state.Score < oldState.Score {
-							closed_states[state.Hash] = nil
-							info.Num_closed -= 1
-							push(state, open_states, info)
-							// info.Num_opened += 1
-						}
-						// TODO: check if in open_states as well
-					} else {
-						// fmt.Println(newState.ToStr())
-						push(newState, open_states, info)
-					}
+					// fmt.Println(newState.ToStr())
+					push(newState, open_states, info)
 				}
 			}
 			// fmt.Println(closed_states[state.Hash].ToStr())

@@ -54,12 +54,6 @@ func DisplayVisu(info *Info) {
 	defer window.Destroy()
 	defer renderer.Destroy()
 
-	// surface, err := window.GetSurface()
-	// defer surface.Free()
-	// if err != nil {
-	// 	panic(err)
-	// }
-
 	// other setup
 	base_head, base_tail := fillLST(info.End)
 
@@ -83,11 +77,11 @@ func DisplayVisu(info *Info) {
 	for ii := 0; ii < state.State.Size*state.State.Size; ii += 1 {
 		fontSurf, err := font.RenderUTF8Blended(strconv.Itoa(ii), sdl.Color{203, 247, 237, 180})
 		if err != nil {
-			panic(err) // TODO: address error
+			panic(err)
 		}
 		texture, err := renderer.CreateTextureFromSurface(fontSurf)
 		if err != nil {
-			panic(err) // TODO: address error
+			panic(err)
 		}
 		textures[ii] = texture
 		fontSurf.Free()
@@ -154,8 +148,6 @@ func drawState(renderer *sdl.Renderer, font *ttf.Font, textures []*sdl.Texture, 
 				rect.X += rect.W / 2
 			}
 			renderer.Copy(textures[n], &sdl.Rect{0, 0, 100, 100}, rect)
-			// fontSurf.Free()
-			// texture.Destroy()
 		} else {
 			renderer.SetDrawColor(22, 25, 37, 255)
 			renderer.FillRect(rect)

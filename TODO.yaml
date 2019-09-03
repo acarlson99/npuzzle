@@ -4,6 +4,7 @@ TODO:
     - Quit if puzzle not solvable
   - Bonus:
     - Fix issue with sizing.  Perhaps add buf on both all sides of tiles
+    - Sometimes it bus errors?
 
 DONE:
   - Validation:

@@ -139,7 +139,6 @@ func (state *State) FindN(n int) (int, error) {
 	return 0, fmt.Errorf("%d not in board state", n)
 }
 
-// TODO: maybe make hashmap to hold children.  Return child if map contains it
 func (state *State) shiftTile(x, y int) *State {
 	if state == nil || (state.Empty%state.Size)+x < 0 || (state.Empty%state.Size)+x >= state.Size ||
 		(state.Empty/state.Size)+y < 0 || (state.Empty/state.Size)+y >= state.Size {
@@ -198,7 +197,7 @@ func (state *State) PrintBoardWidth(width uint) uint {
 		fmt.Println("]")
 	}
 	if verbose {
-		fmt.Printf("%+v\n\n", state)
+		fmt.Printf("%+v\n", state)
 	}
 	return uint(2) + uint(state.Size-1) + (width * uint(state.Size))
 }
