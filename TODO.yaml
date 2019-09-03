@@ -1,7 +1,4 @@
 TODO:
-  - Validation:
-    - Stress test fileio
-    - Quit if puzzle not solvable
   - Bonus:
     - Fix issue with sizing.  Perhaps add buf on both all sides of tiles
     - Sometimes it bus errors?
@@ -10,6 +7,7 @@ DONE:
   - Validation:
     - Check if solvable
     - Fix solvable check
+    - Stress test fileio
   - Search:
     - Record data about search
     - Implement greedy search
