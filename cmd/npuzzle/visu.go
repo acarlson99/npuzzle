@@ -47,7 +47,7 @@ func DisplayVisu(info *Info) {
 	}
 	defer sdl.Quit()
 
-	window, renderer, err := sdl.CreateWindowAndRenderer(wWidth, wHeight, sdl.WINDOW_SHOWN)
+	window, renderer, err := sdl.CreateWindowAndRenderer(wWidth, wHeight, sdl.WINDOW_SHOWN|sdl.WINDOW_RESIZABLE)
 	if err != nil {
 		panic(err)
 	}
@@ -127,18 +127,20 @@ func DisplayVisu(info *Info) {
 		renderer.Clear()
 		renderer.SetDrawColor(0, 0, 0, 255)
 		renderer.FillRect(nil)
-		drawState(renderer, font, textures, state.State)
+		drawState(window, renderer, font, textures, state.State)
 		renderer.Present()
 	}
 }
 
-func drawState(renderer *sdl.Renderer, font *ttf.Font, textures []*sdl.Texture, state *State) {
-	var tilesize, x, y int32
-	tilesize = int32(wWidth/state.Size - (tilebuf - tilebuf/state.Size))
+func drawState(window *sdl.Window, renderer *sdl.Renderer, font *ttf.Font, textures []*sdl.Texture, state *State) {
+	var tilewidth, tileheight, x, y int32
+	width, height := window.GetSize()
+	tilewidth = int32(int(width)/state.Size - (tilebuf - tilebuf/state.Size))
+	tileheight = int32(int(height)/state.Size - (tilebuf - tilebuf/state.Size))
 	for ii, n := range state.Board {
 		x = int32(GetX(ii, state.Size))
 		y = int32(GetY(ii, state.Size))
-		rect := &sdl.Rect{x*tilesize + x*tilebuf, y*tilesize + y*tilebuf, tilesize, tilesize}
+		rect := &sdl.Rect{x*tilewidth + x*tilebuf, y*tileheight + y*tilebuf, tilewidth, tileheight}
 		if n != 0 {
 			renderer.SetDrawColor(64, 110, 142, 255)
 			renderer.FillRect(rect)
