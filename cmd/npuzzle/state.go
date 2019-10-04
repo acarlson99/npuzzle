@@ -33,21 +33,10 @@ func SetScoreCalc(f func(*State) float64) {
 	calcScore = f
 }
 
-// func (state *State) CalcH() int {
-// 	// if calcH == nil {
-// 	// 	ll := log.New(os.Stderr, "", 0)
-// 	// 	ll.Println("calcH has not been set")
-// 	// 	// os.Exit(1)
-// 	// 	return 0
-// 	// }
-// 	return (calcH(state))
-// }
-
 func (state *State) CalcHash() uint64 {
 	var buffer bytes.Buffer
 	for _, num := range state.Board {
 		buffer.WriteString(string(strconv.AppendUint([]byte(nil), uint64(num), 10)))
-		// buffer.WriteString(strconv.Itoa(num))
 		buffer.WriteString(",")
 	}
 	f := fnv.New64a()
@@ -94,7 +83,6 @@ func (state *State) Solvable() bool {
 			}
 		}
 	}
-	// return invCount
 	if state.Size%2 == 1 {
 		return invCount%2 == 0
 	} else if (state.Empty/state.Size)%2 == 0 {
@@ -147,7 +135,6 @@ func (state *State) shiftTile(x, y int) *State {
 	newState := state.copyState()
 	newState.Empty += x + (y * state.Size)
 
-	// fmt.Println(newState.Empty)
 	emptyVal := state.Board[state.Empty]
 	newState.Board[state.Empty] = state.Board[newState.Empty]
 	newState.Board[newState.Empty] = emptyVal

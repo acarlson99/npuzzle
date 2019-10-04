@@ -6,6 +6,7 @@ import (
 )
 
 // heuristic functions compare two states and return H value of first param
+
 func ManhattanDist(state, goal *State) float64 {
 	defer func() {
 		if r := recover(); r != nil {

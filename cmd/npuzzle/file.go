@@ -9,27 +9,6 @@ import (
 	"strings"
 )
 
-// read state from file if specified.  Otherwise reads from stdin
-// func ReadState(file string) (*State, error) {
-// 	var scanner *bufio.Scanner
-// 	if file == "" {
-// 		scanner = bufio.NewScanner(os.Stdin)
-// 	} else {
-// 		file, err := os.Open(file)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		defer file.Close()
-// 		scanner = bufio.NewScanner(file)
-// 	}
-// 	state, err := ReadStateFromScanner(scanner)
-// 	if err != nil {
-// 		return nil, err
-// 	} else {
-// 		return state, nil
-// 	}
-// }
-
 // get start and goal states
 func InitStates(startFile, goalFile string) (*State, *State, error) {
 	var scanner *bufio.Scanner

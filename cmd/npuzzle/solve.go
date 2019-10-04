@@ -50,7 +50,7 @@ func Solve(start, goal *State) (*Info, error) {
 				fmt.Printf("%+v\n", state)
 			}
 		}
-		// if isfinal
+		// if final
 		if state.Hash == goal.Hash {
 			info.End = state
 		} else {
