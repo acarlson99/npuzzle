@@ -111,7 +111,7 @@ func main() {
 	// read states
 	start, goal, err := InitStates(startFile, goalFile)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error:", err)
 		fmt.Println("NOTE: good file looks like this")
 		fmt.Println(`# I am a comment
 3 # size of puzzle
@@ -121,19 +121,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	fmt.Println("Start:")
+	start.PrintBoard()
+	fmt.Println("\nGoal:")
+	goal.PrintBoard()
+
 	// setup
 	SetHCalc(func(state *State) float64 { return heuristicF(state, goal) * multiplier })
 	SetScoreCalc(searchF)
 
 	start.CalcValues()
 	goal.CalcValues()
-
-	fmt.Println("")
-	fmt.Println("START:")
-	start.PrintBoard()
-	fmt.Println("")
-	fmt.Println("GOAL:")
-	goal.PrintBoard()
 
 	if start.Solvable() != goal.Solvable() {
 		fmt.Println("WARNING: STATE NOT SOLVABLE")

@@ -165,9 +165,5 @@ func ReadStateFromScanner(scanner *bufio.Scanner) (*State, error) {
 
 	state := new(State)
 	state.SoftInit(board, empty, size)
-	fmt.Println("Input file:")
-	for _, line := range lines {
-		fmt.Println(line)
-	}
 	return state, nil
 }
