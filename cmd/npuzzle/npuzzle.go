@@ -58,7 +58,7 @@ func main() {
 	var visu bool
 	var multiplier float64
 	flag.StringVar(&goalFile, "goal", "", "file containing goal state")
-	flag.StringVar(&heuristic, "heuristic", "conflict-manhattan", "heuristic function (hamming, manhattan, max, conflict, conflict-manhattan)")
+	flag.StringVar(&heuristic, "heuristic", "conflict-manhattan", "heuristic function (hamming, manhattan, max, euclidean, conflict, conflict-manhattan)")
 	flag.StringVar(&search, "search", "astar", "type of search (uniform, greedy, astar)")
 	flag.BoolVar(&verbose, "verbose", false, "verbose search output")
 	flag.BoolVar(&visu, "visu", false, "enable visu")
@@ -88,6 +88,8 @@ func main() {
 		heuristicF = HammingDist
 	case "max":
 		heuristicF = MaxDist
+	case "euclidean":
+		heuristicF = EuclideanDist
 	case "conflict-manhattan":
 		heuristicF = ConflictManhattan
 	default:

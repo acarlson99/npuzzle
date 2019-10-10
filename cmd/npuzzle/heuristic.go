@@ -43,6 +43,26 @@ func MaxDist(state, goal *State) float64 {
 	return math.Max(HammingDist(state, goal), ManhattanDist(state, goal))
 }
 
+func EuclideanDist(state, goal *State) float64 {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println(r)
+		}
+	}()
+	total := 0.0
+	for ii := range state.Board {
+		if state.Board[ii] != 0 {
+			n, err := state.FindN(goal.Board[ii])
+			if err != nil {
+				panic(err)
+			}
+			total += math.Sqrt(math.Pow(float64(ii%state.Size-n%state.Size), 2) +
+				math.Pow(float64(ii/state.Size-n/state.Size), 2))
+		}
+	}
+	return total
+}
+
 func LinearConflict(state, goal *State) float64 {
 	defer func() {
 		if r := recover(); r != nil {
