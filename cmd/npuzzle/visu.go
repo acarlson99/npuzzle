@@ -14,27 +14,27 @@ const (
 	tilebuf = 5
 )
 
-type DLLST struct {
+type DLList struct {
 	State *State
-	Next  *DLLST
-	Prev  *DLLST
+	Next  *DLList
+	Prev  *DLList
 }
 
-func fillLST(state *State) (*DLLST, *DLLST) {
-	lst := new(DLLST)
-	lst.State = state
-	var head, tail *DLLST
+func fillList(state *State) (*DLList, *DLList) {
+	list := new(DLList)
+	list.State = state
+	var head, tail *DLList
 	if state.Parent != nil {
-		head, tail = fillLST(state.Parent)
-		lst.Next = head
-		lst.Next.Prev = lst
+		head, tail = fillList(state.Parent)
+		list.Next = head
+		list.Next.Prev = list
 	} else {
-		head, tail = lst, lst
+		head, tail = list, list
 	}
-	return lst, tail
+	return list, tail
 }
 
-func DisplayVisu(info *Info) {
+func DisplayVis(info *Info) {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println(r)
@@ -55,7 +55,7 @@ func DisplayVisu(info *Info) {
 	defer renderer.Destroy()
 
 	// other setup
-	base_head, base_tail := fillLST(info.End)
+	base_head, base_tail := fillList(info.End)
 
 	state := base_tail
 

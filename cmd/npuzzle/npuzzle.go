@@ -55,13 +55,13 @@ func main() {
 	flag.Usage = func() { usage(1) }
 
 	var goalFile, startFile, heuristic, search string
-	var visu bool
+	var vis bool
 	var multiplier float64
 	flag.StringVar(&goalFile, "goal", "", "file containing goal state")
 	flag.StringVar(&heuristic, "heuristic", "conflict-manhattan", "heuristic function (hamming, manhattan, max, euclidean, conflict, conflict-manhattan)")
 	flag.StringVar(&search, "search", "astar", "type of search (uniform, greedy, astar)")
 	flag.BoolVar(&verbose, "verbose", false, "verbose search output")
-	flag.BoolVar(&visu, "visu", false, "enable visu")
+	flag.BoolVar(&vis, "vis", false, "enable visualizer")
 	flag.Float64Var(&multiplier, "multiplier", 1.0, "heuristic multiplier")
 
 	flag.Parse()
@@ -151,7 +151,7 @@ func main() {
 
 	info.Print()
 	fmt.Println("Time:", endT.Sub(startT))
-	if visu && info.End != nil {
-		DisplayVisu(info)
+	if vis && info.End != nil {
+		DisplayVis(info)
 	}
 }
